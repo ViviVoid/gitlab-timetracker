@@ -91,6 +91,10 @@ class FilterManager {
     this.dateFilter.end = endDate;
 
     // Filter time entries by date range
+    if (!window.allData || !window.allData.rawTimeEntries) {
+      return;
+    }
+
     window.allData.filteredTimeEntries = window.allData.rawTimeEntries.filter(
       (entry) => {
         return entry.date >= startDate && entry.date <= endDate;
@@ -106,6 +110,15 @@ class FilterManager {
 
     if (!milestoneId) {
       UIManager.showError("Please select a milestone");
+      return;
+    }
+
+    // Check if data exists before filtering
+    if (
+      !window.allData ||
+      !window.allData.milestones ||
+      !window.allData.rawTimeEntries
+    ) {
       return;
     }
 
@@ -144,6 +157,11 @@ class FilterManager {
   updateFilterStatusBar() {
     const statusBar = document.getElementById("filterStatus");
     const filterType = document.getElementById("filterType").value;
+
+    if (!window.allData || !window.allData.filteredTimeEntries) {
+      if (statusBar) statusBar.style.display = "none";
+      return;
+    }
 
     if (filterType === "date") {
       const startDate = document.getElementById("startDate").value;

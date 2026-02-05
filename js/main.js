@@ -1,7 +1,7 @@
 // ========== MAIN APPLICATION FILE ==========
 
 // Global state
-let allData = {
+window.allData = {
   issues: [],
   rawTimeEntries: [],
   filteredTimeEntries: [],
@@ -266,11 +266,11 @@ async function fetchData() {
       },
     );
 
-    allData.issues = data.issues;
-    allData.rawTimeEntries = data.rawTimeEntries;
+    window.allData.issues = data.issues;
+    window.allData.rawTimeEntries = data.rawTimeEntries;
 
     console.log(
-      `Successfully loaded ${allData.rawTimeEntries.length} time entries from ${allData.issues.length} issues`,
+      `Successfully loaded ${window.allData.rawTimeEntries.length} time entries from ${window.allData.issues.length} issues`,
     );
 
     filterManager.loadMilestones();
@@ -285,22 +285,22 @@ async function fetchData() {
 
 function updateAnalytics() {
   if (typeof AnalyticsCalculator === "undefined") return;
-  allData.analytics = AnalyticsCalculator.computeAll(
-    allData.issues,
-    allData.filteredTimeEntries,
+  window.allData.analytics = AnalyticsCalculator.computeAll(
+    window.allData.issues,
+    window.allData.filteredTimeEntries,
   );
-  console.log("Analytics computed", allData.analytics);
+  console.log("Analytics computed", window.allData.analytics);
 
-  allData.analyticsTimestamp = new Date();
+  window.allData.analyticsTimestamp = new Date();
   updateAnalyticsTimestamp();
   generateAnalyticsAlerts();
 }
 
 function updateAnalyticsTimestamp() {
   const timestampEl = document.getElementById("analyticsTimestamp");
-  if (!timestampEl || !allData.analyticsTimestamp) return;
+  if (!timestampEl || !window.allData.analyticsTimestamp) return;
 
-  const timeStr = allData.analyticsTimestamp.toLocaleString("en-US", {
+  const timeStr = window.allData.analyticsTimestamp.toLocaleString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -312,7 +312,7 @@ function updateAnalyticsTimestamp() {
 }
 
 function generateAnalyticsAlerts() {
-  if (!allData.analytics) return;
+  if (!window.allData.analytics) return;
 
   const alertsContainer = document.getElementById("analyticsAlerts");
   if (!alertsContainer) return;
@@ -320,8 +320,13 @@ function generateAnalyticsAlerts() {
   alertsContainer.innerHTML = "";
   const alerts = [];
 
-  if (allData.analytics.burnout && allData.analytics.burnout.length > 0) {
-    const highRisk = allData.analytics.burnout.filter((b) => b.risk === "high");
+  if (
+    window.allData.analytics.burnout &&
+    window.allData.analytics.burnout.length > 0
+  ) {
+    const highRisk = window.allData.analytics.burnout.filter(
+      (b) => b.risk === "high",
+    );
     if (highRisk.length > 0) {
       alerts.push({
         type: "error",
@@ -336,8 +341,11 @@ function generateAnalyticsAlerts() {
     }
   }
 
-  if (allData.analytics.stalled && allData.analytics.stalled.length > 0) {
-    const criticalStalled = allData.analytics.stalled.filter(
+  if (
+    window.allData.analytics.stalled &&
+    window.allData.analytics.stalled.length > 0
+  ) {
+    const criticalStalled = window.allData.analytics.stalled.filter(
       (s) => s.daysSince > analyticsThresholds.stalled * 2,
     );
     if (criticalStalled.length > 0) {
@@ -351,8 +359,11 @@ function generateAnalyticsAlerts() {
     }
   }
 
-  if (allData.analytics.rework && allData.analytics.rework.length > 0) {
-    const highRework = allData.analytics.rework.filter(
+  if (
+    window.allData.analytics.rework &&
+    window.allData.analytics.rework.length > 0
+  ) {
+    const highRework = window.allData.analytics.rework.filter(
       (r) => r.reworkPct > analyticsThresholds.rework,
     );
     if (highRework.length > 0) {
@@ -529,9 +540,9 @@ function switchTab(tabName) {
 
   window.location.hash = `tab=${tabName}`;
 
-  if (tabName === "overview" && allData.cumulativeChart) {
+  if (tabName === "overview" && window.allData.cumulativeChart) {
     setTimeout(() => {
-      allData.cumulativeChart.resize();
+      window.allData.cumulativeChart.resize();
     }, 100);
   }
 }
@@ -547,7 +558,7 @@ function restoreTabState() {
 }
 
 function renderDashboard() {
-  const timeEntries = allData.filteredTimeEntries;
+  const timeEntries = window.allData.filteredTimeEntries;
 
   const memberStats = {};
   timeEntries.forEach((entry) => {
@@ -591,18 +602,18 @@ function renderDashboard() {
 }
 
 function renderAnalytics() {
-  if (!allData.analytics) return;
+  if (!window.allData.analytics) return;
 
-  ChartRenderer.renderWorkloadChart(allData.analytics.workload);
-  TableRenderer.renderStalledIssues(allData.analytics.stalled);
-  TableRenderer.renderReworkAnalysis(allData.analytics.rework);
-  TableRenderer.renderAnomalies(allData.analytics.anomalies);
-  TableRenderer.renderBurnoutRisk(allData.analytics.burnout);
-  ChartRenderer.renderEstimationChart(allData.analytics.estimation);
+  ChartRenderer.renderWorkloadChart(window.allData.analytics.workload);
+  TableRenderer.renderStalledIssues(window.allData.analytics.stalled);
+  TableRenderer.renderReworkAnalysis(window.allData.analytics.rework);
+  TableRenderer.renderAnomalies(window.allData.analytics.anomalies);
+  TableRenderer.renderBurnoutRisk(window.allData.analytics.burnout);
+  ChartRenderer.renderEstimationChart(window.allData.analytics.estimation);
 }
 
 function showMemberDetails(username) {
-  const memberEntries = allData.filteredTimeEntries
+  const memberEntries = window.allData.filteredTimeEntries
     .filter((e) => e.username === username)
     .sort((a, b) => b.date.localeCompare(a.date));
 
@@ -664,12 +675,12 @@ function showMemberDetails(username) {
 
 // Detailed drill-down modal functions
 function showWorkloadDetails() {
-  if (!allData.analytics || !allData.analytics.workload) {
+  if (!window.allData.analytics || !window.allData.analytics.workload) {
     UIManager.showToast("No workload data available", "info");
     return;
   }
 
-  const workload = allData.analytics.workload;
+  const workload = window.allData.analytics.workload;
   let content = '<div style="max-height: 400px; overflow-y: auto;">';
   content += '<table style="width: 100%; border-collapse: collapse;">';
   content +=
@@ -698,15 +709,15 @@ function showWorkloadDetails() {
 
 function showStalledDetails() {
   if (
-    !allData.analytics ||
-    !allData.analytics.stalled ||
-    allData.analytics.stalled.length === 0
+    !window.allData.analytics ||
+    !window.allData.analytics.stalled ||
+    window.allData.analytics.stalled.length === 0
   ) {
     UIManager.showToast("No stalled issues found", "info");
     return;
   }
 
-  const stalled = allData.analytics.stalled;
+  const stalled = window.allData.analytics.stalled;
   let content = '<div style="max-height: 400px; overflow-y: auto;">';
   content +=
     '<p style="margin-bottom: 16px; color: var(--text-secondary);">Issues with no activity for over ' +
@@ -742,15 +753,15 @@ function showStalledDetails() {
 
 function showReworkDetails() {
   if (
-    !allData.analytics ||
-    !allData.analytics.rework ||
-    allData.analytics.rework.length === 0
+    !window.allData.analytics ||
+    !window.allData.analytics.rework ||
+    window.allData.analytics.rework.length === 0
   ) {
     UIManager.showToast("No rework detected", "info");
     return;
   }
 
-  const rework = allData.analytics.rework;
+  const rework = window.allData.analytics.rework;
   let content = '<div style="max-height: 400px; overflow-y: auto;">';
   content +=
     '<p style="margin-bottom: 16px; color: var(--text-secondary);">Issues with negative time entries indicating rework or corrections.</p>';
@@ -784,15 +795,15 @@ function showReworkDetails() {
 
 function showAnomaliesDetails() {
   if (
-    !allData.analytics ||
-    !allData.analytics.anomalies ||
-    allData.analytics.anomalies.length === 0
+    !window.allData.analytics ||
+    !window.allData.analytics.anomalies ||
+    window.allData.analytics.anomalies.length === 0
   ) {
     UIManager.showToast("No anomalies detected", "info");
     return;
   }
 
-  const anomalies = allData.analytics.anomalies;
+  const anomalies = window.allData.analytics.anomalies;
   let content = '<div style="max-height: 400px; overflow-y: auto;">';
   content +=
     '<p style="margin-bottom: 16px; color: var(--text-secondary);">Unusual time entries detected based on configured thresholds.</p>';
@@ -833,15 +844,15 @@ function showAnomaliesDetails() {
 
 function showBurnoutDetails() {
   if (
-    !allData.analytics ||
-    !allData.analytics.burnout ||
-    allData.analytics.burnout.length === 0
+    !window.allData.analytics ||
+    !window.allData.analytics.burnout ||
+    window.allData.analytics.burnout.length === 0
   ) {
     UIManager.showToast("No burnout risk data available", "info");
     return;
   }
 
-  const burnout = allData.analytics.burnout;
+  const burnout = window.allData.analytics.burnout;
   let content = '<div style="max-height: 400px; overflow-y: auto;">';
   content +=
     '<p style="margin-bottom: 16px; color: var(--text-secondary);">Rolling 4-week average hours per team member. High risk: >' +
@@ -877,12 +888,12 @@ function showBurnoutDetails() {
 }
 
 function showEstimationDetails() {
-  if (!allData.analytics || !allData.analytics.estimation) {
+  if (!window.allData.analytics || !window.allData.analytics.estimation) {
     UIManager.showToast("No estimation data available", "info");
     return;
   }
 
-  const estimation = allData.analytics.estimation;
+  const estimation = window.allData.analytics.estimation;
   const totalIssues = estimation.results ? estimation.results.length : 0;
   const summary = estimation.summary || {
     under: 0,
