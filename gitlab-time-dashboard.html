@@ -16,108 +16,172 @@
         --bg-secondary: #f5f5f5;
         --bg-gradient-start: #667eea;
         --bg-gradient-end: #764ba2;
-        --text-primary: #333333;
-        --text-secondary: #555555;
-        --text-tertiary: #777777;
-        --text-muted: #999999;
-        --border-color: #e0e0e0;
-        --border-light: #f0f0f0;
-        --input-border: #e0e0e0;
+        --text-primary: #1a1a1a;
+        --text-secondary: #2d2d2d;
+        --text-tertiary: #4a4a4a;
+        --text-muted: #666666;
+        --border-color: #d0d0d0;
+        --border-light: #e8e8e8;
+        --input-border: #c0c0c0;
         --input-background: #ffffff;
-        --button-primary: #667eea;
-        --button-hover: #5568d3;
-        --button-disabled: #cccccc;
+        --button-primary: #5568d3;
+        --button-hover: #4451b8;
+        --button-disabled: #a0a0a0;
+        --button-text: #ffffff;
+        --button-disabled-text: #888888;
         --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         --chart-bg: #ffffff;
-        --chart-text: #333333;
-        --chart-grid: #e0e0e0;
-        --error-bg: #fee;
-        --error-text: #c33;
-        --error-border: #c33;
-        --success-bg: #efe;
-        --success-text: #3c3;
-        --warning-bg: #ffe;
-        --warning-text: #cc3;
+        --chart-text: #1a1a1a;
+        --chart-grid: #d0d0d0;
+        --error-bg: #fce8e8;
+        --error-text: #b71c1c;
+        --error-border: #d32f2f;
+        --success-bg: #e8f5e9;
+        --success-text: #2e7d32;
+        --success-border: #4caf50;
+        --warning-bg: #fff3e0;
+        --warning-text: #e65100;
         --spinner-bg: #f3f3f3;
-        --spinner-primary: #667eea;
-        --focus-color: #667eea;
-        --placeholder-text: #999999;
-        --hover-bg: #f8f9fa;
+        --spinner-primary: #5568d3;
+        --spinner-track: #e8e8e8;
+        --spinner-fill: #5568d3;
+        --loading-bg: #ffffff;
+        --loading-border: #d0d0d0;
+        --focus-color: #5568d3;
+        --placeholder-text: #757575;
+        --hover-bg: #f0f0f0;
         --modal-backdrop: rgba(0, 0, 0, 0.5);
       }
 
       /* Dark Mode Colors */
       @media (prefers-color-scheme: dark) {
         :root {
-          --bg-primary: #1a1a1a;
-          --bg-secondary: #2d2d2d;
+          --bg-primary: #121212;
+          --bg-secondary: #1e1e1e;
           --bg-gradient-start: #1e3a8a;
           --bg-gradient-end: #6b21a8;
-          --text-primary: #e0e0e0;
-          --text-secondary: #b0b0b0;
-          --text-tertiary: #909090;
-          --text-muted: #707070;
-          --border-color: #444444;
-          --border-light: #333333;
-          --input-border: #555555;
-          --input-background: #2d2d2d;
-          --button-primary: #667eea;
-          --button-hover: #7c8ff5;
-          --button-disabled: #555555;
-          --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-          --chart-bg: #2d2d2d;
-          --chart-text: #e0e0e0;
-          --chart-grid: #444444;
-          --error-bg: #3a1a1a;
-          --error-text: #ff6b6b;
-          --error-border: #ff6b6b;
-          --success-bg: #1a3a1a;
-          --success-text: #6bff6b;
-          --warning-bg: #3a3a1a;
-          --warning-text: #ffff6b;
-          --spinner-bg: #3a3a3a;
-          --spinner-primary: #667eea;
-          --focus-color: #667eea;
-          --placeholder-text: #707070;
-          --hover-bg: #3a3a3a;
-          --modal-backdrop: rgba(0, 0, 0, 0.7);
+          --text-primary: #f5f5f5;
+          --text-secondary: #e0e0e0;
+          --text-tertiary: #b8b8b8;
+          --text-muted: #9e9e9e;
+          --border-color: #404040;
+          --border-light: #2a2a2a;
+          --input-border: #505050;
+          --input-background: #1e1e1e;
+          --button-primary: #7c8ff5;
+          --button-hover: #98a7ff;
+          --button-disabled: #4a4a4a;
+          --button-text: #ffffff;
+          --button-disabled-text: #888888;
+          --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+          --chart-bg: #1e1e1e;
+          --chart-text: #f5f5f5;
+          --chart-grid: #404040;
+          --error-bg: #2c1010;
+          --error-text: #ff8a80;
+          --error-border: #ff5252;
+          --success-bg: #0d2818;
+          --success-text: #69f0ae;
+          --success-border: #4caf50;
+          --warning-bg: #2e2408;
+          --warning-text: #ffd740;
+          --spinner-bg: #2a2a2a;
+          --spinner-primary: #7c8ff5;
+          --spinner-track: #2a2a2a;
+          --spinner-fill: #7c8ff5;
+          --loading-bg: #1e1e1e;
+          --loading-border: #404040;
+          --focus-color: #98a7ff;
+          --placeholder-text: #888888;
+          --hover-bg: #2a2a2a;
+          --modal-backdrop: rgba(0, 0, 0, 0.8);
         }
+      }
+
+      /* User-controlled light mode (overrides system preference) */
+      [data-theme="light"] {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f5f5f5;
+        --bg-gradient-start: #667eea;
+        --bg-gradient-end: #764ba2;
+        --text-primary: #1a1a1a;
+        --text-secondary: #2d2d2d;
+        --text-tertiary: #4a4a4a;
+        --text-muted: #666666;
+        --border-color: #d0d0d0;
+        --border-light: #e8e8e8;
+        --input-border: #c0c0c0;
+        --input-background: #ffffff;
+        --button-primary: #5568d3;
+        --button-hover: #4451b8;
+        --button-disabled: #a0a0a0;
+        --button-text: #ffffff;
+        --button-disabled-text: #888888;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --chart-bg: #ffffff;
+        --chart-text: #1a1a1a;
+        --chart-grid: #d0d0d0;
+        --error-bg: #fce8e8;
+        --error-text: #b71c1c;
+        --error-border: #d32f2f;
+        --success-bg: #e8f5e9;
+        --success-text: #2e7d32;
+        --success-border: #4caf50;
+        --warning-bg: #fff3e0;
+        --warning-text: #e65100;
+        --spinner-bg: #f3f3f3;
+        --spinner-primary: #5568d3;
+        --spinner-track: #e8e8e8;
+        --spinner-fill: #5568d3;
+        --loading-bg: #ffffff;
+        --loading-border: #d0d0d0;
+        --focus-color: #5568d3;
+        --placeholder-text: #757575;
+        --hover-bg: #f0f0f0;
+        --modal-backdrop: rgba(0, 0, 0, 0.5);
       }
 
       /* User-controlled dark mode */
       [data-theme="dark"] {
-        --bg-primary: #1a1a1a;
-        --bg-secondary: #2d2d2d;
+        --bg-primary: #121212;
+        --bg-secondary: #1e1e1e;
         --bg-gradient-start: #1e3a8a;
         --bg-gradient-end: #6b21a8;
-        --text-primary: #e0e0e0;
-        --text-secondary: #b0b0b0;
-        --text-tertiary: #909090;
-        --text-muted: #707070;
-        --border-color: #444444;
-        --border-light: #333333;
-        --input-border: #555555;
-        --input-background: #2d2d2d;
-        --button-primary: #667eea;
-        --button-hover: #7c8ff5;
-        --button-disabled: #555555;
-        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        --chart-bg: #2d2d2d;
-        --chart-text: #e0e0e0;
-        --chart-grid: #444444;
-        --error-bg: #3a1a1a;
-        --error-text: #ff6b6b;
-        --error-border: #ff6b6b;
-        --success-bg: #1a3a1a;
-        --success-text: #6bff6b;
-        --warning-bg: #3a3a1a;
-        --warning-text: #ffff6b;
-        --spinner-bg: #3a3a3a;
-        --spinner-primary: #667eea;
-        --focus-color: #667eea;
-        --placeholder-text: #707070;
-        --hover-bg: #3a3a3a;
-        --modal-backdrop: rgba(0, 0, 0, 0.7);
+        --text-primary: #f5f5f5;
+        --text-secondary: #e0e0e0;
+        --text-tertiary: #b8b8b8;
+        --text-muted: #9e9e9e;
+        --border-color: #404040;
+        --border-light: #2a2a2a;
+        --input-border: #505050;
+        --input-background: #1e1e1e;
+        --button-primary: #7c8ff5;
+        --button-hover: #98a7ff;
+        --button-disabled: #4a4a4a;
+        --button-text: #ffffff;
+        --button-disabled-text: #888888;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        --chart-bg: #1e1e1e;
+        --chart-text: #f5f5f5;
+        --chart-grid: #404040;
+        --error-bg: #2c1010;
+        --error-text: #ff8a80;
+        --error-border: #ff5252;
+        --success-bg: #0d2818;
+        --success-text: #69f0ae;
+        --success-border: #4caf50;
+        --warning-bg: #2e2408;
+        --warning-text: #ffd740;
+        --spinner-bg: #2a2a2a;
+        --spinner-primary: #7c8ff5;
+        --spinner-track: #2a2a2a;
+        --spinner-fill: #7c8ff5;
+        --loading-bg: #1e1e1e;
+        --loading-border: #404040;
+        --focus-color: #98a7ff;
+        --placeholder-text: #888888;
+        --hover-bg: #2a2a2a;
+        --modal-backdrop: rgba(0, 0, 0, 0.8);
       }
 
       * {
@@ -164,19 +228,19 @@
 
       .config-section {
         display: flex;
-        gap: 15px;
+        gap: 16px;
         flex-wrap: wrap;
         align-items: flex-end;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
       }
 
       .date-filter-section {
         display: flex;
-        gap: 15px;
+        gap: 16px;
         flex-wrap: wrap;
         align-items: flex-end;
-        padding-top: 20px;
-        border-top: 2px solid #f0f0f0;
+        padding-top: 24px;
+        border-top: 2px solid var(--border-light);
       }
 
       .input-group {
@@ -244,23 +308,28 @@
 
       button {
         padding: 12px 24px;
-        background: #667eea;
-        color: white;
+        background: var(--button-primary);
+        color: var(--button-text);
         border: none;
         border-radius: 8px;
         font-size: 14px;
         font-weight: 600;
         cursor: pointer;
-        transition: background 0.3s;
+        transition: all 0.2s ease;
       }
 
       button:hover {
-        background: #5568d3;
+        background: var(--button-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       }
 
       button:disabled {
-        background: #ccc;
+        background: var(--button-disabled);
+        color: var(--button-disabled-text);
         cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
       }
 
       button:focus-visible,
@@ -333,20 +402,22 @@
       .loading {
         text-align: center;
         padding: 40px;
-        background: white;
+        background: var(--loading-bg);
+        border: 2px solid var(--loading-border);
         border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 24px;
+        color: var(--text-primary);
       }
 
       .spinner {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #667eea;
+        border: 4px solid var(--spinner-track);
+        border-top: 4px solid var(--spinner-fill);
         border-radius: 50%;
         width: 50px;
         height: 50px;
         animation: spin 1s linear infinite;
-        margin: 0 auto 15px;
+        margin: 0 auto 16px;
       }
 
       @keyframes spin {
@@ -359,21 +430,21 @@
       }
 
       .error {
-        background: #fee;
-        color: #c33;
-        padding: 15px;
+        background: var(--error-bg);
+        color: var(--error-text);
+        padding: 16px;
         border-radius: 8px;
-        margin-bottom: 20px;
-        border-left: 4px solid #c33;
+        margin-bottom: 24px;
+        border-left: 4px solid var(--error-border);
       }
 
       .success {
-        background: #efe;
-        color: #2b7a2b;
-        padding: 15px;
+        background: var(--success-bg);
+        color: var(--success-text);
+        padding: 16px;
         border-radius: 8px;
-        margin-bottom: 20px;
-        border-left: 4px solid #2b7a2b;
+        margin-bottom: 24px;
+        border-left: 4px solid var(--success-border);
       }
 
       .input-error {
@@ -899,6 +970,156 @@
           transform: translateY(0);
         }
       }
+
+      /* Analytics Alert Styles */
+      .analytics-alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        animation: slideIn 0.3s ease-out;
+      }
+
+      .analytics-alert.alert-warning {
+        background: var(--warning-bg);
+        border-left: 4px solid var(--warning-text);
+      }
+
+      .analytics-alert.alert-error {
+        background: var(--error-bg);
+        border-left: 4px solid var(--error-text);
+      }
+
+      .analytics-alert-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      .analytics-alert-content {
+        flex: 1;
+      }
+
+      .analytics-alert-title {
+        font-weight: 600;
+        margin-bottom: 4px;
+        color: var(--text-primary);
+      }
+
+      .analytics-alert-message {
+        font-size: 14px;
+        color: var(--text-secondary);
+      }
+
+      .analytics-alert-actions {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+      }
+
+      .analytics-alert-button {
+        padding: 4px 12px;
+        font-size: 12px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        background: var(--button-primary);
+        color: white;
+        transition: all 0.2s;
+      }
+
+      .analytics-alert-button:hover {
+        background: var(--button-hover);
+      }
+
+      .analytics-timestamp {
+        font-size: 12px;
+        color: var(--text-muted);
+        padding: 8px 12px;
+        text-align: right;
+        border-top: 1px solid var(--border-light);
+      }
+
+      .metric-clickable {
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .metric-clickable:hover {
+        background: var(--hover-bg);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+      }
+
+      .analytics-card h2 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .analytics-card .card-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .analytics-card .icon-button {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+
+      .analytics-card .icon-button:hover {
+        background: var(--hover-bg);
+        color: var(--text-primary);
+      }
+
+      .threshold-config {
+        display: flex;
+        gap: 16px;
+        padding: 12px;
+        background: var(--bg-secondary);
+        border-radius: 6px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+
+      .threshold-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .threshold-item label {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+
+      .threshold-item input {
+        padding: 4px 8px;
+        font-size: 13px;
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        background: var(--input-background);
+        color: var(--text-primary);
+        width: 80px;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
     </style>
   </head>
   <body>
@@ -909,7 +1130,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
           "
         >
           <h1>GitLab Time Tracking Dashboard</h1>
@@ -917,12 +1138,15 @@
             id="themeToggleBtn"
             onclick="toggleDarkMode()"
             style="
-              padding: 8px 12px;
-              font-size: 12px;
-              background: var(--bg-secondary);
-              border: none;
+              padding: 8px 16px;
+              font-size: 13px;
+              background: var(--button-primary);
+              color: var(--button-text);
+              border: 2px solid transparent;
               border-radius: 8px;
+              font-weight: 600;
               cursor: pointer;
+              transition: all 0.2s ease;
             "
             title="Toggle Dark Mode"
             aria-label="Toggle dark mode"
@@ -1138,16 +1362,34 @@
 
         <!-- Analytics Tab -->
         <div id="tab-analytics" class="tab-content" style="display: none">
+          <!-- Analytics Alerts -->
+          <div id="analyticsAlerts"></div>
+          
+          <!-- Analytics Timestamp -->
+          <div class="analytics-timestamp" id="analyticsTimestamp">
+            Last updated: Never
+          </div>
+          
           <div class="analytics-grid">
-            <div class="card analytics-card">
-              <h2>Workload Distribution</h2>
+            <div class="card analytics-card metric-clickable" onclick="showWorkloadDetails()">
+              <h2>
+                <span>Workload Distribution</span>
+                <div class="card-actions">
+                  <button class="icon-button" onclick="event.stopPropagation(); configureThresholds('workload')" title="Configure thresholds" aria-label="Configure workload thresholds">⚙️</button>
+                </div>
+              </h2>
               <div class="chart-container" style="height: 260px">
                 <canvas id="workloadChart"></canvas>
               </div>
             </div>
 
-            <div class="card analytics-card">
-              <h2>WIP Stalled Issues</h2>
+            <div class="card analytics-card metric-clickable" onclick="showStalledDetails()">
+              <h2>
+                <span>WIP Stalled Issues</span>
+                <div class="card-actions">
+                  <button class="icon-button" onclick="event.stopPropagation(); configureThresholds('stalled')" title="Configure thresholds" aria-label="Configure stalled issue thresholds">⚙️</button>
+                </div>
+              </h2>
               <table>
                 <thead>
                   <tr>
@@ -1163,8 +1405,13 @@
               </div>
             </div>
 
-            <div class="card analytics-card">
-              <h2>Rework Analysis</h2>
+            <div class="card analytics-card metric-clickable" onclick="showReworkDetails()">
+              <h2>
+                <span>Rework Analysis</span>
+                <div class="card-actions">
+                  <button class="icon-button" onclick="event.stopPropagation(); configureThresholds('rework')" title="Configure thresholds" aria-label="Configure rework thresholds">⚙️</button>
+                </div>
+              </h2>
               <table>
                 <thead>
                   <tr>
@@ -1180,16 +1427,26 @@
               </div>
             </div>
 
-            <div class="card analytics-card">
-              <h2>Anomalies</h2>
+            <div class="card analytics-card metric-clickable" onclick="showAnomaliesDetails()">
+              <h2>
+                <span>Anomalies</span>
+                <div class="card-actions">
+                  <button class="icon-button" onclick="event.stopPropagation(); configureThresholds('anomalies')" title="Configure thresholds" aria-label="Configure anomaly thresholds">⚙️</button>
+                </div>
+              </h2>
               <div id="anomaliesSummary" class="help-text">
                 No anomalies detected.
               </div>
               <div id="anomaliesList"></div>
             </div>
 
-            <div class="card analytics-card">
-              <h2>Burnout Risk</h2>
+            <div class="card analytics-card metric-clickable" onclick="showBurnoutDetails()">
+              <h2>
+                <span>Burnout Risk</span>
+                <div class="card-actions">
+                  <button class="icon-button" onclick="event.stopPropagation(); configureThresholds('burnout')" title="Configure thresholds" aria-label="Configure burnout thresholds">⚙️</button>
+                </div>
+              </h2>
               <table>
                 <thead>
                   <tr>
@@ -1205,8 +1462,13 @@
               </div>
             </div>
 
-            <div class="card analytics-card">
-              <h2>Estimation Accuracy</h2>
+            <div class="card analytics-card metric-clickable" onclick="showEstimationDetails()">
+              <h2>
+                <span>Estimation Accuracy</span>
+                <div class="card-actions">
+                  <button class="icon-button" onclick="event.stopPropagation(); configureThresholds('estimation')" title="Configure thresholds" aria-label="Configure estimation thresholds">⚙️</button>
+                </div>
+              </h2>
               <div class="chart-container" style="height: 260px">
                 <canvas id="estimationChart"></canvas>
               </div>
@@ -1465,6 +1727,7 @@
           workload: null,
           estimation: null,
         },
+        analyticsTimestamp: null,
       };
 
       let dateFilter = {
@@ -1473,6 +1736,41 @@
         type: "date", // 'date' or 'milestone'
         milestoneId: null,
       };
+
+      // Analytics Thresholds (configurable by user)
+      let analyticsThresholds = {
+        stalled: 7, // days without activity
+        burnoutHigh: 45, // hours per week
+        burnoutLow: 20, // hours per week
+        rework: 10, // percentage
+        largeEntry: 8, // hours
+        tinyEntry: 0.25, // hours
+        overEstimate: 20, // percentage over estimate
+        underEstimate: 20, // percentage under estimate
+      };
+
+      // Load thresholds from localStorage
+      function loadThresholds() {
+        try {
+          const stored = localStorage.getItem('analytics-thresholds');
+          if (stored) {
+            analyticsThresholds = { ...analyticsThresholds, ...JSON.parse(stored) };
+          }
+        } catch (error) {
+          console.warn('Failed to load thresholds:', error);
+        }
+      }
+
+      // Save thresholds to localStorage
+      function saveThresholds() {
+        try {
+          localStorage.setItem('analytics-thresholds', JSON.stringify(analyticsThresholds));
+          showToast('Thresholds saved successfully', 'success');
+        } catch (error) {
+          console.warn('Failed to save thresholds:', error);
+          showToast('Failed to save thresholds', 'error');
+        }
+      }
 
       // Initialize date filters to last month
       function initializeDateFilters() {
@@ -1886,10 +2184,6 @@
         document.getElementById("filterInactive").checked = false;
       }
 
-      // Call on page load
-      initializeDateFilters();
-      loadEnvConfig();
-
       function isRememberSettingsEnabled() {
         const rememberCheckbox = document.getElementById("rememberSettings");
         return rememberCheckbox ? rememberCheckbox.checked : true;
@@ -1923,8 +2217,34 @@
         }
       }
 
-      initializeRememberSettings();
-      loadStoredSettings();
+      // Initialize everything when DOM is ready
+      async function initializeApp() {
+        initializeDateFilters();
+        loadThresholds();
+        initializeRememberSettings();
+        
+        // Load .env first (has priority), then localStorage if .env doesn't set values
+        await loadEnvConfig();
+        
+        // Only load localStorage if fields are still empty
+        const gitlabUrl = document.getElementById("gitlabUrl").value;
+        const projectId = document.getElementById("projectId").value;
+        
+        if (!gitlabUrl || !projectId) {
+          loadStoredSettings();
+        }
+        
+        setupEnterKeySupport();
+        setupKeyboardShortcuts();
+      }
+
+      // Call on page load
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeApp);
+      } else {
+        // DOM already loaded
+        initializeApp();
+      }
 
       function isTypingInInput(target) {
         return (
@@ -2029,9 +2349,6 @@
           }
         });
       }
-
-      setupEnterKeySupport();
-      setupKeyboardShortcuts();
 
       // Restore tab state from URL on page load
       window.addEventListener("load", () => {
@@ -2153,6 +2470,176 @@
           allData.filteredTimeEntries,
         );
         console.log("Analytics computed", allData.analytics);
+        
+        // Update timestamp
+        allData.analyticsTimestamp = new Date();
+        updateAnalyticsTimestamp();
+        
+        // Generate alerts for critical metrics
+        generateAnalyticsAlerts();
+      }
+
+      function updateAnalyticsTimestamp() {
+        const timestampEl = document.getElementById('analyticsTimestamp');
+        if (!timestampEl || !allData.analyticsTimestamp) return;
+        
+        const timeStr = allData.analyticsTimestamp.toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+        timestampEl.textContent = `Last updated: ${timeStr}`;
+      }
+
+      function generateAnalyticsAlerts() {
+        if (!allData.analytics) return;
+        
+        const alertsContainer = document.getElementById('analyticsAlerts');
+        if (!alertsContainer) return;
+        
+        alertsContainer.innerHTML = '';
+        const alerts = [];
+        
+        // Check for burnout risks
+        if (allData.analytics.burnout && allData.analytics.burnout.length > 0) {
+          const highRisk = allData.analytics.burnout.filter(b => b.risk === 'high');
+          if (highRisk.length > 0) {
+            alerts.push({
+              type: 'error',
+              icon: '⚠️',
+              title: 'High Burnout Risk Detected',
+              message: `${highRisk.length} team member(s) working over ${analyticsThresholds.burnoutHigh}h/week on average`,
+              action: { label: 'View Details', onClick: 'showBurnoutDetails()' }
+            });
+          }
+        }
+        
+        // Check for stalled issues
+        if (allData.analytics.stalled && allData.analytics.stalled.length > 0) {
+          const criticalStalled = allData.analytics.stalled.filter(s => s.daysSince > analyticsThresholds.stalled * 2);
+          if (criticalStalled.length > 0) {
+            alerts.push({
+              type: 'warning',
+              icon: '⏸️',
+              title: 'Critical Stalled Issues',
+              message: `${criticalStalled.length} issue(s) with no activity for over ${analyticsThresholds.stalled * 2} days`,
+              action: { label: 'View Issues', onClick: 'showStalledDetails()' }
+            });
+          }
+        }
+        
+        // Check for high rework percentage
+        if (allData.analytics.rework && allData.analytics.rework.length > 0) {
+          const highRework = allData.analytics.rework.filter(r => r.reworkPct > analyticsThresholds.rework);
+          if (highRework.length > 0) {
+            alerts.push({
+              type: 'warning',
+              icon: '🔄',
+              title: 'High Rework Detected',
+              message: `${highRework.length} issue(s) with over ${analyticsThresholds.rework}% time spent on rework`,
+              action: { label: 'View Analysis', onClick: 'showReworkDetails()' }
+            });
+          }
+        }
+        
+        // Render alerts
+        alerts.forEach(alert => {
+          const alertEl = document.createElement('div');
+          alertEl.className = `analytics-alert alert-${alert.type}`;
+          alertEl.innerHTML = `
+            <div class="analytics-alert-icon">${alert.icon}</div>
+            <div class="analytics-alert-content">
+              <div class="analytics-alert-title">${alert.title}</div>
+              <div class="analytics-alert-message">${alert.message}</div>
+              ${alert.action ? `
+                <div class="analytics-alert-actions">
+                  <button class="analytics-alert-button" onclick="${alert.action.onClick}">
+                    ${alert.action.label}
+                  </button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+          alertsContainer.appendChild(alertEl);
+        });
+      }
+
+      function configureThresholds(metricType) {
+        const thresholdConfigs = {
+          stalled: [
+            { key: 'stalled', label: 'Stalled Days', value: analyticsThresholds.stalled, unit: 'days' }
+          ],
+          burnout: [
+            { key: 'burnoutHigh', label: 'High Risk', value: analyticsThresholds.burnoutHigh, unit: 'hrs/week' },
+            { key: 'burnoutLow', label: 'Low Risk', value: analyticsThresholds.burnoutLow, unit: 'hrs/week' }
+          ],
+          rework: [
+            { key: 'rework', label: 'Rework %', value: analyticsThresholds.rework, unit: '%' }
+          ],
+          anomalies: [
+            { key: 'largeEntry', label: 'Large Entry', value: analyticsThresholds.largeEntry, unit: 'hours' },
+            { key: 'tinyEntry', label: 'Tiny Entry', value: analyticsThresholds.tinyEntry, unit: 'hours' }
+          ],
+          estimation: [
+            { key: 'overEstimate', label: 'Over %', value: analyticsThresholds.overEstimate, unit: '%' },
+            { key: 'underEstimate', label: 'Under %', value: analyticsThresholds.underEstimate, unit: '%' }
+          ],
+          workload: []
+        };
+        
+        const configs = thresholdConfigs[metricType];
+        if (!configs || configs.length === 0) {
+          showToast('No configurable thresholds for this metric', 'info');
+          return;
+        }
+        
+        let formHtml = '<div class="threshold-config">';
+        configs.forEach(config => {
+          formHtml += `
+            <div class="threshold-item">
+              <label>${config.label} (${config.unit})</label>
+              <input type="number" id="threshold_${config.key}" value="${config.value}" min="0" step="0.25" />
+            </div>
+          `;
+        });
+        formHtml += '</div>';
+        
+        const modalContent = `
+          <h3>Configure ${metricType.charAt(0).toUpperCase() + metricType.slice(1)} Thresholds</h3>
+          ${formHtml}
+          <div style="margin-top: 16px; display: flex; gap: 8px;">
+            <button onclick="saveThresholdChanges('${metricType}')" style="padding: 8px 16px; background: var(--button-primary); color: white; border: none; border-radius: 4px; cursor: pointer;">
+              Save
+            </button>
+            <button onclick="closeModal()" style="padding: 8px 16px; background: var(--bg-secondary); color: var(--text-primary); border: none; border-radius: 4px; cursor: pointer;">
+              Cancel
+            </button>
+          </div>
+        `;
+        
+        showModal('Configure Thresholds', modalContent);
+      }
+
+      function saveThresholdChanges(metricType) {
+        // Collect all threshold input values
+        const inputs = document.querySelectorAll('[id^="threshold_"]');
+        inputs.forEach(input => {
+          const key = input.id.replace('threshold_', '');
+          const value = parseFloat(input.value);
+          if (!isNaN(value) && value >= 0) {
+            analyticsThresholds[key] = value;
+          }
+        });
+        
+        saveThresholds();
+        closeModal();
+        
+        // Recalculate analytics with new thresholds
+        updateAnalytics();
+        renderDashboard();
       }
 
       function applyDateFilter() {
@@ -2799,6 +3286,220 @@
         modal.setAttribute("aria-hidden", "true");
       }
 
+      // Generic modal show function
+      function showModal(title, bodyContent) {
+        const modal = document.getElementById("timeEntriesModal");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalBody = document.getElementById("modalBody");
+        
+        modalTitle.textContent = title;
+        modalBody.innerHTML = bodyContent;
+        
+        modal.classList.add("active");
+        modal.setAttribute("aria-hidden", "false");
+      }
+
+      // Detailed drill-down modal functions
+      function showWorkloadDetails() {
+        if (!allData.analytics || !allData.analytics.workload) {
+          showToast('No workload data available', 'info');
+          return;
+        }
+        
+        const workload = allData.analytics.workload;
+        let content = '<div style="max-height: 400px; overflow-y: auto;">';
+        content += '<table style="width: 100%; border-collapse: collapse;">';
+        content += '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Member</th>';
+        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Total Hours</th>';
+        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Utilization</th></tr></thead>';
+        content += '<tbody>';
+        
+        workload.forEach(member => {
+          const utilization = member.utilization ? `${member.utilization.toFixed(1)}%` : 'N/A';
+          content += `<tr>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${member.member}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${member.hours.toFixed(2)}h</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${utilization}</td>
+          </tr>`;
+        });
+        
+        content += '</tbody></table></div>';
+        showModal('Workload Distribution Details', content);
+      }
+
+      function showStalledDetails() {
+        if (!allData.analytics || !allData.analytics.stalled || allData.analytics.stalled.length === 0) {
+          showToast('No stalled issues found', 'info');
+          return;
+        }
+        
+        const stalled = allData.analytics.stalled;
+        let content = '<div style="max-height: 400px; overflow-y: auto;">';
+        content += '<p style="margin-bottom: 16px; color: var(--text-secondary);">Issues with no activity for over ' + analyticsThresholds.stalled + ' days.</p>';
+        content += '<table style="width: 100%; border-collapse: collapse;">';
+        content += '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Issue</th>';
+        content += '<th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Last Activity</th>';
+        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Days Since</th></tr></thead>';
+        content += '<tbody>';
+        
+        stalled.forEach(issue => {
+          const daysSince = Math.floor(issue.daysSince);
+          const badgeClass = daysSince > analyticsThresholds.stalled * 2 ? 'error' : 'warning';
+          content += `<tr>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">#${issue.iid}: ${issue.title}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${issue.lastEntry || 'Unknown'}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">
+              <span class="badge badge-${badgeClass}">${daysSince} days</span>
+            </td>
+          </tr>`;
+        });
+        
+        content += '</tbody></table></div>';
+        showModal('Stalled Issues Details', content);
+      }
+
+      function showReworkDetails() {
+        if (!allData.analytics || !allData.analytics.rework || allData.analytics.rework.length === 0) {
+          showToast('No rework detected', 'info');
+          return;
+        }
+        
+        const rework = allData.analytics.rework;
+        let content = '<div style="max-height: 400px; overflow-y: auto;">';
+        content += '<p style="margin-bottom: 16px; color: var(--text-secondary);">Issues with negative time entries indicating rework or corrections.</p>';
+        content += '<table style="width: 100%; border-collapse: collapse;">';
+        content += '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Issue</th>';
+        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Negative Hours</th>';
+        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Total Hours</th>';
+        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Rework %</th></tr></thead>';
+        content += '<tbody>';
+        
+        rework.forEach(issue => {
+          const badgeClass = issue.reworkPct > analyticsThresholds.rework ? 'error' : 'warning';
+          content += `<tr>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">#${issue.iid}: ${issue.title}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right; color: var(--error-text);">${Math.abs(issue.negativeHours).toFixed(2)}h</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${issue.totalHours.toFixed(2)}h</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">
+              <span class="badge badge-${badgeClass}">${issue.reworkPct.toFixed(1)}%</span>
+            </td>
+          </tr>`;
+        });
+        
+        content += '</tbody></table></div>';
+        showModal('Rework Analysis Details', content);
+      }
+
+      function showAnomaliesDetails() {
+        if (!allData.analytics || !allData.analytics.anomalies || allData.analytics.anomalies.length === 0) {
+          showToast('No anomalies detected', 'info');
+          return;
+        }
+        
+        const anomalies = allData.analytics.anomalies;
+        let content = '<div style="max-height: 400px; overflow-y: auto;">';
+        content += '<p style="margin-bottom: 16px; color: var(--text-secondary);">Unusual time entries detected based on configured thresholds.</p>';
+        content += '<table style="width: 100%; border-collapse: collapse;">';
+        content += '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Date</th>';
+        content += '<th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Issue</th>';
+        content += '<th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Member</th>';
+        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Hours</th>';
+        content += '<th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Reason</th></tr></thead>';
+        content += '<tbody>';
+        
+        anomalies.forEach(entry => {
+          content += `<tr>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${entry.date}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">#${entry.iid || 'N/A'}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${entry.member || 'Unknown'}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${entry.hours.toFixed(2)}h</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">
+              <span class="badge badge-warning">${entry.reason}</span>
+            </td>
+          </tr>`;
+        });
+        
+        content += '</tbody></table></div>';
+        showModal('Anomalies Details', content);
+      }
+
+      function showBurnoutDetails() {
+        if (!allData.analytics || !allData.analytics.burnout || allData.analytics.burnout.length === 0) {
+          showToast('No burnout risk data available', 'info');
+          return;
+        }
+        
+        const burnout = allData.analytics.burnout;
+        let content = '<div style="max-height: 400px; overflow-y: auto;">';
+        content += '<p style="margin-bottom: 16px; color: var(--text-secondary);">Rolling 4-week average hours per team member. High risk: >' + analyticsThresholds.burnoutHigh + 'h/week</p>';
+        content += '<table style="width: 100%; border-collapse: collapse;">';
+        content += '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Member</th>';
+        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Avg Hours/Week</th>';
+        content += '<th style="text-align: center; padding: 8px; border-bottom: 2px solid var(--border-color);">Risk Level</th></tr></thead>';
+        content += '<tbody>';
+        
+        burnout.forEach(member => {
+          const badgeClass = member.risk === 'high' ? 'error' : member.risk === 'low' ? 'info' : 'success';
+          content += `<tr>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${member.member}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${member.avgHoursPerWeek.toFixed(2)}h</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: center;">
+              <span class="badge badge-${badgeClass}">${member.risk.toUpperCase()}</span>
+            </td>
+          </tr>`;
+        });
+        
+        content += '</tbody></table></div>';
+        showModal('Burnout Risk Details', content);
+      }
+
+      function showEstimationDetails() {
+        if (!allData.analytics || !allData.analytics.estimation) {
+          showToast('No estimation data available', 'info');
+          return;
+        }
+        
+        const estimation = allData.analytics.estimation;
+        let content = '<div style="max-height: 400px; overflow-y: auto;">';
+        content += '<div style="margin-bottom: 16px; padding: 12px; background: var(--bg-secondary); border-radius: 6px;">';
+        content += '<h4 style="margin: 0 0 8px 0;">Summary</h4>';
+        content += '<p style="margin: 4px 0; color: var(--text-secondary);">Total Issues: <strong>' + estimation.totalIssues + '</strong></p>';
+        content += '<p style="margin: 4px 0; color: var(--text-secondary);">Accurately Estimated: <strong>' + estimation.accurate + '</strong> (' + ((estimation.accurate/estimation.totalIssues)*100).toFixed(1) + '%)</p>';
+        content += '<p style="margin: 4px 0; color: var(--text-secondary);">Under-Estimated: <strong>' + estimation.underEstimated + '</strong> (' + ((estimation.underEstimated/estimation.totalIssues)*100).toFixed(1) + '%)</p>';
+        content += '<p style="margin: 4px 0; color: var(--text-secondary);">Over-Estimated: <strong>' + estimation.overEstimated + '</strong> (' + ((estimation.overEstimated/estimation.totalIssues)*100).toFixed(1) + '%)</p>';
+        content += '</div>';
+        
+        if (estimation.issues && estimation.issues.length > 0) {
+          content += '<h4 style="margin: 16px 0 8px 0;">Individual Issues</h4>';
+          content += '<table style="width: 100%; border-collapse: collapse;">';
+          content += '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Issue</th>';
+          content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Estimated</th>';
+          content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Actual</th>';
+          content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Variance</th></tr></thead>';
+          content += '<tbody>';
+          
+          estimation.issues.forEach(issue => {
+            const variance = issue.actual - issue.estimated;
+            const variancePct = (variance / issue.estimated) * 100;
+            const badgeClass = Math.abs(variancePct) <= 10 ? 'success' : (variancePct > 0 ? 'warning' : 'info');
+            
+            content += `<tr>
+              <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">#${issue.iid}: ${issue.title}</td>
+              <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${issue.estimated.toFixed(2)}h</td>
+              <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${issue.actual.toFixed(2)}h</td>
+              <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">
+                <span class="badge badge-${badgeClass}">${variance > 0 ? '+' : ''}${variance.toFixed(2)}h (${variancePct > 0 ? '+' : ''}${variancePct.toFixed(1)}%)</span>
+              </td>
+            </tr>`;
+          });
+          
+          content += '</tbody></table>';
+        }
+        
+        content += '</div>';
+        showModal('Estimation Accuracy Details', content);
+      }
+
       // Close modal when clicking outside
       window.onclick = function (event) {
         const timeEntriesModal = document.getElementById("timeEntriesModal");
@@ -2825,10 +3526,7 @@
         ).matches;
 
         const theme = savedTheme || (prefersDark ? "dark" : "light");
-        document.documentElement.setAttribute(
-          "data-theme",
-          theme === "dark" ? "dark" : "",
-        );
+        document.documentElement.setAttribute("data-theme", theme);
 
         // Update theme toggle button if it exists
         updateThemeToggleButton(theme);
@@ -2841,10 +3539,7 @@
           document.documentElement.getAttribute("data-theme");
         const newTheme = currentTheme === "dark" ? "light" : "dark";
 
-        document.documentElement.setAttribute(
-          "data-theme",
-          newTheme === "dark" ? "dark" : "",
-        );
+        document.documentElement.setAttribute("data-theme", newTheme);
         localStorage.setItem("dashboard-theme", newTheme);
 
         // Update charts for new theme
@@ -2888,10 +3583,7 @@
           if (!localStorage.getItem("dashboard-theme")) {
             // Only auto-switch if user hasn't set a preference
             const theme = e.matches ? "dark" : "light";
-            document.documentElement.setAttribute(
-              "data-theme",
-              theme === "dark" ? "dark" : "",
-            );
+            document.documentElement.setAttribute("data-theme", theme);
             applyThemeToCharts();
             updateThemeToggleButton(theme);
           }
