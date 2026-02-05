@@ -2,7 +2,7 @@
  * Data Manager - Handles GitLab data fetching and parsing
  */
 
-const ISSUE_CONCURRENCY = 8;
+const ISSUE_CONCURRENCY = 15;
 
 function createLimiter(limit) {
   let active = 0;
