@@ -558,8 +558,47 @@
             dateFilter.end = endDate.toISOString().split('T')[0];
         }
 
+        // Load configuration from .env file
+        async function loadEnvConfig() {
+            try {
+                const response = await fetch('.env');
+                if (response.ok) {
+                    const envText = await response.text();
+                    const envVars = {};
+                    
+                    // Parse .env file
+                    envText.split('\n').forEach(line => {
+                        line = line.trim();
+                        // Skip comments and empty lines
+                        if (line && !line.startsWith('#')) {
+                            const [key, ...valueParts] = line.split('=');
+                            if (key && valueParts.length > 0) {
+                                const value = valueParts.join('=').trim();
+                                envVars[key.trim()] = value;
+                            }
+                        }
+                    });
+                    
+                    // Apply values to form fields
+                    if (envVars.TARGET_LINK) {
+                        document.getElementById('gitlabUrl').value = envVars.TARGET_LINK;
+                    }
+                    if (envVars.TARGET_API_KEY) {
+                        document.getElementById('accessToken').value = envVars.TARGET_API_KEY;
+                    }
+                    if (envVars.TARGET_PROJECT_ID) {
+                        document.getElementById('projectId').value = envVars.TARGET_PROJECT_ID;
+                    }
+                }
+            } catch (error) {
+                // Silently fail if .env file is not found or can't be loaded
+                console.log('No .env file found or could not be loaded');
+            }
+        }
+
         // Call on page load
         initializeDateFilters();
+        loadEnvConfig();
 
         function showError(message) {
             const errorDiv = document.getElementById('error');
@@ -605,7 +644,7 @@
 
                 const issues = await issuesResponse.json();
 
-                // Fetch time stats and notes for each issue
+                // Fetch notes and time stats for each issue
                 const issueDataPromises = issues.map(async issue => {
                     const timeStatsRes = await fetch(
                         `${gitlabUrl}/api/v4/projects/${projectId}/issues/${issue.iid}/time_stats`,
@@ -629,37 +668,70 @@
                     const timeStats = timeStatsRes.ok ? await timeStatsRes.json() : null;
                     const notes = notesRes.ok ? await notesRes.json() : [];
 
-                    // Filter notes that are time tracking entries
-                    const timeEntries = notes.filter(note => {
-                        return note.body && (
+                    // Parse time tracking system notes and link with adjacent comment notes
+                    const timeEntries = [];
+                    
+                    for (let i = 0; i < notes.length; i++) {
+                        const note = notes[i];
+                        
+                        // Check if this is a time tracking system note
+                        if (note.system && note.body && (
                             note.body.includes('added') && note.body.includes('of time spent') ||
-                            note.body.includes('subtracted') && note.body.includes('of time spent') ||
-                            note.body.match(/\/spend|\/spent/)
-                        );
-                    }).map(note => {
-                        // Parse time from note body
-                        let hours = 0;
-                        const match = note.body.match(/(\d+(?:\.\d+)?)\s*(h|hour|hours|m|min|minute|minutes|d|day|days)/i);
-                        if (match) {
-                            const value = parseFloat(match[1]);
-                            const unit = match[2].toLowerCase();
-                            if (unit.startsWith('h')) {
-                                hours = value;
-                            } else if (unit.startsWith('m')) {
-                                hours = value / 60;
-                            } else if (unit.startsWith('d')) {
-                                hours = value * 8;
+                            note.body.includes('subtracted') && note.body.includes('of time spent')
+                        )) {
+                            // Parse time from note body
+                            let hours = 0;
+                            
+                            // Handle formats like "2h", "30m", "2h 30m"
+                            const hourMatch = note.body.match(/(\d+)h/);
+                            const minMatch = note.body.match(/(\d+)m/);
+                            
+                            if (hourMatch) {
+                                hours += parseInt(hourMatch[1]);
                             }
+                            if (minMatch) {
+                                hours += parseInt(minMatch[1]) / 60;
+                            }
+                            
+                            // Extract the "spent at" date if available
+                            const dateMatch = note.body.match(/at (\d{4}-\d{2}-\d{2})/);
+                            const entryDate = dateMatch ? dateMatch[1] : note.created_at.split('T')[0];
+                            
+                            // Look for an adjacent non-system note from the same author (within 30 seconds)
+                            let summary = '';
+                            const noteTime = new Date(note.created_at).getTime();
+                            
+                            // Check previous note (might be the comment before time entry)
+                            if (i > 0) {
+                                const prevNote = notes[i - 1];
+                                const prevTime = new Date(prevNote.created_at).getTime();
+                                if (!prevNote.system && 
+                                    prevNote.author.username === note.author.username &&
+                                    Math.abs(noteTime - prevTime) < 30000) { // Within 30 seconds
+                                    summary = prevNote.body;
+                                }
+                            }
+                            
+                            // Check next note (might be the comment after time entry)
+                            if (!summary && i < notes.length - 1) {
+                                const nextNote = notes[i + 1];
+                                const nextTime = new Date(nextNote.created_at).getTime();
+                                if (!nextNote.system && 
+                                    nextNote.author.username === note.author.username &&
+                                    Math.abs(noteTime - nextTime) < 30000) { // Within 30 seconds
+                                    summary = nextNote.body;
+                                }
+                            }
+                            
+                            timeEntries.push({
+                                author: note.author.name,
+                                username: note.author.username,
+                                date: entryDate,
+                                hours: hours,
+                                summary: summary
+                            });
                         }
-
-                        return {
-                            author: note.author.name,
-                            username: note.author.username,
-                            date: note.created_at.split('T')[0],
-                            hours: hours,
-                            body: note.body
-                        };
-                    });
+                    }
 
                     return {
                         ...issue,
@@ -970,21 +1042,17 @@
                 `;
             } else {
                 modalBody.innerHTML = memberEntries.map(entry => {
-                    // Extract comment from body if present
+                    // Display summary if present
                     let comment = '';
-                    if (entry.body) {
-                        // Remove the time tracking command parts and extract any remaining comment
-                        let bodyText = entry.body
-                            .replace(/added.*?of time spent/gi, '')
-                            .replace(/subtracted.*?of time spent/gi, '')
-                            .replace(/\/spend\s+\d+[hmd]/gi, '')
-                            .replace(/\/spent\s+\d+[hmd]/gi, '')
-                            .replace(/\d+(?:\.\d+)?\s*(?:h|hour|hours|m|min|minute|minutes|d|day|days)\s*/gi, '')
-                            .trim();
-                        
-                        if (bodyText && bodyText.length > 0) {
-                            comment = `<div class="time-entry-comment">${bodyText}</div>`;
-                        }
+                    if (entry.summary && entry.summary.trim().length > 0) {
+                        // Escape HTML to prevent XSS
+                        const escapedSummary = entry.summary
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#039;');
+                        comment = `<div class="time-entry-comment">${escapedSummary}</div>`;
                     }
                     
                     return `
