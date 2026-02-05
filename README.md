@@ -8,7 +8,10 @@ A beautiful, interactive dashboard for visualizing GitLab time tracking data acr
 - **Team member statistics** with detailed time entry breakdowns
 - **PBI (Issue) tracking** showing hours logged per issue
 - **Time entry summaries** display comments/descriptions from each time log
-- **Date filtering** to view time entries for specific date ranges
+- **Flexible filtering** - Filter by date range OR milestone
+- **Project browser** - Browse and select from your accessible GitLab projects
+- **Milestone tracking** - View time entries for specific project milestones
+- **Beautiful, modern UI** with responsive design
 
 ## Quick Start
 
@@ -71,11 +74,33 @@ When team members log time in GitLab with a description, it will appear in the d
 
 This description will show up when you click on the team member in the dashboard!
 
-## Date Filtering
+## Filtering Options
 
+### Date Range Filtering
 - Default range: Last 30 days
 - Adjustable via the "Start Date" and "End Date" filters
 - All charts and statistics update based on the selected range
+
+### Milestone Filtering
+- Filter time entries by project milestone
+- Select "Milestone" from the "Filter By" dropdown
+- Choose a milestone from the list
+- Shows time entries that fall within the milestone's date range
+- **Note:** Milestone and date range filtering are mutually exclusive
+
+## Project Browser
+
+Can't remember your project ID? Use the **Browse Projects** button!
+
+1. Enter your GitLab URL and Access Token
+2. Click "Browse Projects"
+3. Browse through your accessible projects (sorted by last activity)
+4. Click on a project to auto-fill the Project ID field
+
+The browser shows:
+- Project name
+- Full project path
+- Project ID
 
 ## Project Structure
 

@@ -389,11 +389,26 @@
             font-style: italic;
         }
 
+        .time-entry.negative .time-entry-comment {
+            background: #fff0f0;
+            border-left-color: #e74c3c;
+            color: #c33;
+        }
+
         .time-entry-hours {
             font-weight: 700;
             color: #667eea;
             font-size: 20px;
             margin-left: 20px;
+        }
+
+        .time-entry-hours.negative {
+            color: #e74c3c;
+        }
+
+        .time-entry.negative {
+            background: #fff5f5;
+            border-left: 3px solid #e74c3c;
         }
 
         .empty-state {
@@ -405,6 +420,50 @@
         .empty-state-icon {
             font-size: 48px;
             margin-bottom: 15px;
+        }
+
+        .project-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .project-item {
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .project-item:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+        .project-info {
+            flex: 1;
+        }
+
+        .project-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .project-path {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .project-id {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -427,22 +486,43 @@
                 </div>
                 <div class="input-group">
                     <label>&nbsp;</label>
+                    <button onclick="showProjectBrowser()">Browse Projects</button>
+                </div>
+                <div class="input-group">
+                    <label>&nbsp;</label>
                     <button onclick="fetchData()">Load Data</button>
                 </div>
             </div>
             
             <div class="date-filter-section">
                 <div class="input-group">
-                    <label for="startDate">Start Date</label>
-                    <input type="date" id="startDate">
+                    <label for="filterType">Filter By</label>
+                    <select id="filterType" onchange="toggleFilterType()">
+                        <option value="date">Date Range</option>
+                        <option value="milestone">Milestone</option>
+                    </select>
                 </div>
-                <div class="input-group">
-                    <label for="endDate">End Date</label>
-                    <input type="date" id="endDate">
+                <div id="dateRangeInputs" style="display: flex; gap: 15px; flex: 1;">
+                    <div class="input-group">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" id="startDate">
+                    </div>
+                    <div class="input-group">
+                        <label for="endDate">End Date</label>
+                        <input type="date" id="endDate">
+                    </div>
+                </div>
+                <div id="milestoneInput" style="display: none; flex: 1;">
+                    <div class="input-group">
+                        <label for="milestoneSelect">Milestone</label>
+                        <select id="milestoneSelect">
+                            <option value="">Select a milestone...</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label>&nbsp;</label>
-                    <button onclick="applyDateFilter()">Apply Filter</button>
+                    <button onclick="applyFilter()">Apply Filter</button>
                 </div>
             </div>
         </div>
@@ -450,7 +530,7 @@
         <div id="error" style="display: none;" class="error"></div>
         <div id="loading" style="display: none;" class="loading">
             <div class="spinner"></div>
-            <p>Fetching data from GitLab...</p>
+            <p id="loadingMessage">Fetching data from GitLab...</p>
         </div>
 
         <div id="dashboard" style="display: none;" class="dashboard">
@@ -532,17 +612,37 @@
         </div>
     </div>
 
+    <!-- Modal for project browser -->
+    <div id="projectBrowserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Select Project</h2>
+                <button class="modal-close" onclick="closeProjectBrowser()">&times;</button>
+            </div>
+            <div class="modal-body" id="projectBrowserBody">
+                <div class="loading" id="projectsLoading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Loading projects...</p>
+                </div>
+                <div id="projectsList" class="project-list"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let allData = {
             issues: [],
             rawTimeEntries: [],
             filteredTimeEntries: [],
-            cumulativeChart: null
+            cumulativeChart: null,
+            milestones: []
         };
 
         let dateFilter = {
             start: null,
-            end: null
+            end: null,
+            type: 'date', // 'date' or 'milestone'
+            milestoneId: null
         };
 
         // Initialize date filters to last month
@@ -596,6 +696,174 @@
             }
         }
 
+        function toggleFilterType() {
+            const filterType = document.getElementById('filterType').value;
+            const dateRangeInputs = document.getElementById('dateRangeInputs');
+            const milestoneInput = document.getElementById('milestoneInput');
+            
+            if (filterType === 'date') {
+                dateRangeInputs.style.display = 'flex';
+                milestoneInput.style.display = 'none';
+            } else {
+                dateRangeInputs.style.display = 'none';
+                milestoneInput.style.display = 'block';
+            }
+        }
+
+        async function loadMilestones() {
+            const gitlabUrl = document.getElementById('gitlabUrl').value.trim();
+            const accessToken = document.getElementById('accessToken').value.trim();
+            const projectId = document.getElementById('projectId').value.trim();
+
+            if (!gitlabUrl || !accessToken || !projectId) {
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `${gitlabUrl}/api/v4/projects/${projectId}/milestones?per_page=100`,
+                    {
+                        headers: {
+                            'PRIVATE-TOKEN': accessToken
+                        }
+                    }
+                );
+
+                if (response.ok) {
+                    allData.milestones = await response.json();
+                    const milestoneSelect = document.getElementById('milestoneSelect');
+                    milestoneSelect.innerHTML = '<option value="">Select a milestone...</option>';
+                    
+                    allData.milestones.forEach(milestone => {
+                        const option = document.createElement('option');
+                        option.value = milestone.id;
+                        option.textContent = milestone.title;
+                        milestoneSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.warn('Failed to load milestones:', error);
+            }
+        }
+
+        function applyFilter() {
+            const filterType = document.getElementById('filterType').value;
+            
+            if (filterType === 'date') {
+                applyDateFilter();
+            } else {
+                applyMilestoneFilter();
+            }
+        }
+
+        function applyMilestoneFilter() {
+            const milestoneId = document.getElementById('milestoneSelect').value;
+            
+            if (!milestoneId) {
+                showError('Please select a milestone');
+                return;
+            }
+
+            const milestone = allData.milestones.find(m => m.id == milestoneId);
+            if (!milestone) {
+                showError('Milestone not found');
+                return;
+            }
+
+            dateFilter.type = 'milestone';
+            dateFilter.milestoneId = milestoneId;
+            dateFilter.start = milestone.start_date || null;
+            dateFilter.end = milestone.due_date || null;
+
+            // Filter time entries by milestone dates
+            if (dateFilter.start && dateFilter.end) {
+                allData.filteredTimeEntries = allData.rawTimeEntries.filter(entry => {
+                    return entry.date >= dateFilter.start && entry.date <= dateFilter.end;
+                });
+            } else {
+                // If milestone has no dates, show all entries
+                allData.filteredTimeEntries = allData.rawTimeEntries;
+            }
+
+            renderDashboard();
+        }
+
+        async function showProjectBrowser() {
+            const gitlabUrl = document.getElementById('gitlabUrl').value.trim();
+            const accessToken = document.getElementById('accessToken').value.trim();
+
+            if (!gitlabUrl || !accessToken) {
+                showError('Please enter GitLab URL and Access Token first');
+                return;
+            }
+
+            document.getElementById('projectBrowserModal').classList.add('active');
+            document.getElementById('projectsLoading').style.display = 'block';
+            document.getElementById('projectsList').innerHTML = '';
+
+            try {
+                const response = await fetch(
+                    `${gitlabUrl}/api/v4/projects?membership=true&per_page=100&order_by=last_activity_at`,
+                    {
+                        headers: {
+                            'PRIVATE-TOKEN': accessToken
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch projects: ${response.status}`);
+                }
+
+                const projects = await response.json();
+                document.getElementById('projectsLoading').style.display = 'none';
+
+                const projectsList = document.getElementById('projectsList');
+                if (projects.length === 0) {
+                    projectsList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📁</div><p>No projects found</p></div>';
+                } else {
+                    projectsList.innerHTML = projects.map(project => {
+                        const escapedName = project.name
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;');
+                        const escapedPath = project.path_with_namespace
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;');
+                        
+                        return `
+                            <div class="project-item" onclick="selectProject(${project.id}, '${escapedName.replace(/'/g, "\\'")}')">
+                                <div class="project-info">
+                                    <div class="project-name">${escapedName}</div>
+                                    <div class="project-path">${escapedPath}</div>
+                                </div>
+                                <div class="project-id">#${project.id}</div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch (error) {
+                document.getElementById('projectsLoading').style.display = 'none';
+                showError(error.message);
+            }
+        }
+
+        function selectProject(projectId, projectName) {
+            document.getElementById('projectId').value = projectId;
+            closeProjectBrowser();
+            showError(`Selected project: ${projectName}`);
+            setTimeout(() => {
+                document.getElementById('error').style.display = 'none';
+            }, 2000);
+        }
+
+        function closeProjectBrowser() {
+            document.getElementById('projectBrowserModal').classList.remove('active');
+        }
+
         // Call on page load
         initializeDateFilters();
         loadEnvConfig();
@@ -626,25 +894,48 @@
 
             showLoading(true);
             document.getElementById('error').style.display = 'none';
+            document.getElementById('loadingMessage').textContent = 'Fetching issues from GitLab...';
 
             try {
-                // Fetch all issues from the project
-                const issuesResponse = await fetch(
-                    `${gitlabUrl}/api/v4/projects/${projectId}/issues?per_page=100&scope=all`,
-                    {
-                        headers: {
-                            'PRIVATE-TOKEN': accessToken
-                        }
-                    }
-                );
+                // Fetch ALL issues from the project with pagination
+                let allIssues = [];
+                let page = 1;
+                let hasMorePages = true;
 
-                if (!issuesResponse.ok) {
-                    throw new Error(`Failed to fetch issues: ${issuesResponse.status} ${issuesResponse.statusText}`);
+                while (hasMorePages) {
+                    const issuesResponse = await fetch(
+                        `${gitlabUrl}/api/v4/projects/${projectId}/issues?per_page=100&scope=all&page=${page}`,
+                        {
+                            headers: {
+                                'PRIVATE-TOKEN': accessToken
+                            }
+                        }
+                    );
+
+                    if (!issuesResponse.ok) {
+                        throw new Error(`Failed to fetch issues: ${issuesResponse.status} ${issuesResponse.statusText}`);
+                    }
+
+                    const issues = await issuesResponse.json();
+                    if (issues.length === 0) {
+                        hasMorePages = false;
+                    } else {
+                        allIssues = allIssues.concat(issues);
+                        page++;
+                        // Safety check to prevent infinite loops
+                        if (page > 100) hasMorePages = false;
+                    }
                 }
 
-                const issues = await issuesResponse.json();
+                const issues = allIssues;
+                console.log(`Loaded ${issues.length} issues from project`);
+
+                // Update loading message
+                document.getElementById('loadingMessage').textContent = 
+                    `Processing ${issues.length} issues and fetching time entries...`;
 
                 // Fetch notes and time stats for each issue
+                let processedCount = 0;
                 const issueDataPromises = issues.map(async issue => {
                     const timeStatsRes = await fetch(
                         `${gitlabUrl}/api/v4/projects/${projectId}/issues/${issue.iid}/time_stats`,
@@ -655,18 +946,46 @@
                         }
                     );
 
-                    // Fetch notes (comments) which contain time tracking entries
-                    const notesRes = await fetch(
-                        `${gitlabUrl}/api/v4/projects/${projectId}/issues/${issue.iid}/notes?per_page=100`,
-                        {
-                            headers: {
-                                'PRIVATE-TOKEN': accessToken
+                    // Fetch ALL notes (comments) with pagination - time tracking entries
+                    let allNotes = [];
+                    let page = 1;
+                    let hasMorePages = true;
+
+                    while (hasMorePages) {
+                        const notesRes = await fetch(
+                            `${gitlabUrl}/api/v4/projects/${projectId}/issues/${issue.iid}/notes?per_page=100&page=${page}`,
+                            {
+                                headers: {
+                                    'PRIVATE-TOKEN': accessToken
+                                }
                             }
+                        );
+
+                        if (!notesRes.ok) {
+                            console.warn(`Failed to fetch notes for issue ${issue.iid}, page ${page}`);
+                            break;
                         }
-                    );
+
+                        const notes = await notesRes.json();
+                        if (notes.length === 0) {
+                            hasMorePages = false;
+                        } else {
+                            allNotes = allNotes.concat(notes);
+                            page++;
+                            // Safety check to prevent infinite loops
+                            if (page > 100) hasMorePages = false;
+                        }
+                    }
 
                     const timeStats = timeStatsRes.ok ? await timeStatsRes.json() : null;
-                    const notes = notesRes.ok ? await notesRes.json() : [];
+                    const notes = allNotes;
+
+                    // Update progress
+                    processedCount++;
+                    if (processedCount % 5 === 0 || processedCount === issues.length) {
+                        document.getElementById('loadingMessage').textContent = 
+                            `Processing issues: ${processedCount}/${issues.length}`;
+                    }
 
                     // Parse time tracking system notes and link with adjacent comment notes
                     const timeEntries = [];
@@ -677,7 +996,8 @@
                         // Check if this is a time tracking system note
                         if (note.system && note.body && (
                             note.body.includes('added') && note.body.includes('of time spent') ||
-                            note.body.includes('subtracted') && note.body.includes('of time spent')
+                            note.body.includes('subtracted') && note.body.includes('of time spent') ||
+                            note.body.includes('deleted') && note.body.includes('of spent time')
                         )) {
                             // Parse time from note body
                             let hours = 0;
@@ -693,6 +1013,11 @@
                                 hours += parseInt(minMatch[1]) / 60;
                             }
                             
+                            // Make negative if time was subtracted or deleted
+                            if (note.body.includes('subtracted') || note.body.includes('deleted')) {
+                                hours = -hours;
+                            }
+                            
                             // Extract the "spent at" date if available
                             const dateMatch = note.body.match(/at (\d{4}-\d{2}-\d{2})/);
                             const entryDate = dateMatch ? dateMatch[1] : note.created_at.split('T')[0];
@@ -700,6 +1025,7 @@
                             // Look for an adjacent non-system note from the same author (within 30 seconds)
                             let summary = '';
                             const noteTime = new Date(note.created_at).getTime();
+                            const isNegative = hours < 0;
                             
                             // Check previous note (might be the comment before time entry)
                             if (i > 0) {
@@ -721,6 +1047,11 @@
                                     Math.abs(noteTime - nextTime) < 30000) { // Within 30 seconds
                                     summary = nextNote.body;
                                 }
+                            }
+                            
+                            // Add indicator for deleted/subtracted time if no summary
+                            if (!summary && isNegative) {
+                                summary = '[Time removed]';
                             }
                             
                             timeEntries.push({
@@ -756,6 +1087,11 @@
                     }
                 });
 
+                console.log(`Loaded ${allData.rawTimeEntries.length} time entries from ${issues.length} issues`);
+
+                // Load milestones in the background
+                loadMilestones();
+
                 applyDateFilter();
                 showLoading(false);
 
@@ -769,6 +1105,7 @@
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
 
+            dateFilter.type = 'date';
             dateFilter.start = startDate;
             dateFilter.end = endDate;
 
@@ -1029,7 +1366,12 @@
             const member = memberEntries[0];
             if (!member) return;
 
-            document.getElementById('modalTitle').textContent = `${member.author} - Time Entries`;
+            // Calculate total hours (including negative entries)
+            const totalHours = memberEntries.reduce((sum, e) => sum + e.hours, 0);
+            const entryCount = memberEntries.length;
+
+            document.getElementById('modalTitle').textContent = 
+                `${member.author} - ${entryCount} ${entryCount === 1 ? 'Entry' : 'Entries'} (Total: ${totalHours.toFixed(1)}h)`;
 
             const modalBody = document.getElementById('modalBody');
 
@@ -1055,14 +1397,20 @@
                         comment = `<div class="time-entry-comment">${escapedSummary}</div>`;
                     }
                     
+                    const isNegative = entry.hours < 0;
+                    const negativeClass = isNegative ? 'negative' : '';
+                    const hoursDisplay = isNegative 
+                        ? `${entry.hours.toFixed(1)}h` 
+                        : `${entry.hours.toFixed(1)}h`;
+                    
                     return `
-                        <div class="time-entry">
+                        <div class="time-entry ${negativeClass}">
                             <div class="time-entry-info">
                                 <div class="time-entry-date">${entry.date}</div>
                                 <div class="time-entry-pbi">#${entry.issueId}: ${entry.issueTitle}</div>
                                 ${comment}
                             </div>
-                            <div class="time-entry-hours">${entry.hours.toFixed(1)}h</div>
+                            <div class="time-entry-hours ${negativeClass}">${hoursDisplay}</div>
                         </div>
                     `;
                 }).join('');
@@ -1077,9 +1425,14 @@
 
         // Close modal when clicking outside
         window.onclick = function(event) {
-            const modal = document.getElementById('timeEntriesModal');
-            if (event.target === modal) {
+            const timeEntriesModal = document.getElementById('timeEntriesModal');
+            const projectBrowserModal = document.getElementById('projectBrowserModal');
+            
+            if (event.target === timeEntriesModal) {
                 closeModal();
+            }
+            if (event.target === projectBrowserModal) {
+                closeProjectBrowser();
             }
         }
 
@@ -1087,6 +1440,7 @@
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeModal();
+                closeProjectBrowser();
             }
         });
     </script>
