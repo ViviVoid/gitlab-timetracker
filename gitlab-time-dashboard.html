@@ -1364,18 +1364,31 @@
         <div id="tab-analytics" class="tab-content" style="display: none">
           <!-- Analytics Alerts -->
           <div id="analyticsAlerts"></div>
-          
+
           <!-- Analytics Timestamp -->
           <div class="analytics-timestamp" id="analyticsTimestamp">
             Last updated: Never
           </div>
-          
+
           <div class="analytics-grid">
-            <div class="card analytics-card metric-clickable" onclick="showWorkloadDetails()">
+            <div
+              class="card analytics-card metric-clickable"
+              onclick="showWorkloadDetails()"
+            >
               <h2>
                 <span>Workload Distribution</span>
                 <div class="card-actions">
-                  <button class="icon-button" onclick="event.stopPropagation(); configureThresholds('workload')" title="Configure thresholds" aria-label="Configure workload thresholds">⚙️</button>
+                  <button
+                    class="icon-button"
+                    onclick="
+                      event.stopPropagation();
+                      configureThresholds('workload');
+                    "
+                    title="Configure thresholds"
+                    aria-label="Configure workload thresholds"
+                  >
+                    ⚙️
+                  </button>
                 </div>
               </h2>
               <div class="chart-container" style="height: 260px">
@@ -1383,11 +1396,24 @@
               </div>
             </div>
 
-            <div class="card analytics-card metric-clickable" onclick="showStalledDetails()">
+            <div
+              class="card analytics-card metric-clickable"
+              onclick="showStalledDetails()"
+            >
               <h2>
                 <span>WIP Stalled Issues</span>
                 <div class="card-actions">
-                  <button class="icon-button" onclick="event.stopPropagation(); configureThresholds('stalled')" title="Configure thresholds" aria-label="Configure stalled issue thresholds">⚙️</button>
+                  <button
+                    class="icon-button"
+                    onclick="
+                      event.stopPropagation();
+                      configureThresholds('stalled');
+                    "
+                    title="Configure thresholds"
+                    aria-label="Configure stalled issue thresholds"
+                  >
+                    ⚙️
+                  </button>
                 </div>
               </h2>
               <table>
@@ -1405,11 +1431,24 @@
               </div>
             </div>
 
-            <div class="card analytics-card metric-clickable" onclick="showReworkDetails()">
+            <div
+              class="card analytics-card metric-clickable"
+              onclick="showReworkDetails()"
+            >
               <h2>
                 <span>Rework Analysis</span>
                 <div class="card-actions">
-                  <button class="icon-button" onclick="event.stopPropagation(); configureThresholds('rework')" title="Configure thresholds" aria-label="Configure rework thresholds">⚙️</button>
+                  <button
+                    class="icon-button"
+                    onclick="
+                      event.stopPropagation();
+                      configureThresholds('rework');
+                    "
+                    title="Configure thresholds"
+                    aria-label="Configure rework thresholds"
+                  >
+                    ⚙️
+                  </button>
                 </div>
               </h2>
               <table>
@@ -1427,11 +1466,24 @@
               </div>
             </div>
 
-            <div class="card analytics-card metric-clickable" onclick="showAnomaliesDetails()">
+            <div
+              class="card analytics-card metric-clickable"
+              onclick="showAnomaliesDetails()"
+            >
               <h2>
                 <span>Anomalies</span>
                 <div class="card-actions">
-                  <button class="icon-button" onclick="event.stopPropagation(); configureThresholds('anomalies')" title="Configure thresholds" aria-label="Configure anomaly thresholds">⚙️</button>
+                  <button
+                    class="icon-button"
+                    onclick="
+                      event.stopPropagation();
+                      configureThresholds('anomalies');
+                    "
+                    title="Configure thresholds"
+                    aria-label="Configure anomaly thresholds"
+                  >
+                    ⚙️
+                  </button>
                 </div>
               </h2>
               <div id="anomaliesSummary" class="help-text">
@@ -1440,11 +1492,24 @@
               <div id="anomaliesList"></div>
             </div>
 
-            <div class="card analytics-card metric-clickable" onclick="showBurnoutDetails()">
+            <div
+              class="card analytics-card metric-clickable"
+              onclick="showBurnoutDetails()"
+            >
               <h2>
                 <span>Burnout Risk</span>
                 <div class="card-actions">
-                  <button class="icon-button" onclick="event.stopPropagation(); configureThresholds('burnout')" title="Configure thresholds" aria-label="Configure burnout thresholds">⚙️</button>
+                  <button
+                    class="icon-button"
+                    onclick="
+                      event.stopPropagation();
+                      configureThresholds('burnout');
+                    "
+                    title="Configure thresholds"
+                    aria-label="Configure burnout thresholds"
+                  >
+                    ⚙️
+                  </button>
                 </div>
               </h2>
               <table>
@@ -1462,11 +1527,24 @@
               </div>
             </div>
 
-            <div class="card analytics-card metric-clickable" onclick="showEstimationDetails()">
+            <div
+              class="card analytics-card metric-clickable"
+              onclick="showEstimationDetails()"
+            >
               <h2>
                 <span>Estimation Accuracy</span>
                 <div class="card-actions">
-                  <button class="icon-button" onclick="event.stopPropagation(); configureThresholds('estimation')" title="Configure thresholds" aria-label="Configure estimation thresholds">⚙️</button>
+                  <button
+                    class="icon-button"
+                    onclick="
+                      event.stopPropagation();
+                      configureThresholds('estimation');
+                    "
+                    title="Configure thresholds"
+                    aria-label="Configure estimation thresholds"
+                  >
+                    ⚙️
+                  </button>
                 </div>
               </h2>
               <div class="chart-container" style="height: 260px">
@@ -1752,23 +1830,29 @@
       // Load thresholds from localStorage
       function loadThresholds() {
         try {
-          const stored = localStorage.getItem('analytics-thresholds');
+          const stored = localStorage.getItem("analytics-thresholds");
           if (stored) {
-            analyticsThresholds = { ...analyticsThresholds, ...JSON.parse(stored) };
+            analyticsThresholds = {
+              ...analyticsThresholds,
+              ...JSON.parse(stored),
+            };
           }
         } catch (error) {
-          console.warn('Failed to load thresholds:', error);
+          console.warn("Failed to load thresholds:", error);
         }
       }
 
       // Save thresholds to localStorage
       function saveThresholds() {
         try {
-          localStorage.setItem('analytics-thresholds', JSON.stringify(analyticsThresholds));
-          showToast('Thresholds saved successfully', 'success');
+          localStorage.setItem(
+            "analytics-thresholds",
+            JSON.stringify(analyticsThresholds),
+          );
+          showToast("Thresholds saved successfully", "success");
         } catch (error) {
-          console.warn('Failed to save thresholds:', error);
-          showToast('Failed to save thresholds', 'error');
+          console.warn("Failed to save thresholds:", error);
+          showToast("Failed to save thresholds", "error");
         }
       }
 
@@ -2222,25 +2306,25 @@
         initializeDateFilters();
         loadThresholds();
         initializeRememberSettings();
-        
+
         // Load .env first (has priority), then localStorage if .env doesn't set values
         await loadEnvConfig();
-        
+
         // Only load localStorage if fields are still empty
         const gitlabUrl = document.getElementById("gitlabUrl").value;
         const projectId = document.getElementById("projectId").value;
-        
+
         if (!gitlabUrl || !projectId) {
           loadStoredSettings();
         }
-        
+
         setupEnterKeySupport();
         setupKeyboardShortcuts();
       }
 
       // Call on page load
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeApp);
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initializeApp);
       } else {
         // DOM already loaded
         initializeApp();
@@ -2470,97 +2554,113 @@
           allData.filteredTimeEntries,
         );
         console.log("Analytics computed", allData.analytics);
-        
+
         // Update timestamp
         allData.analyticsTimestamp = new Date();
         updateAnalyticsTimestamp();
-        
+
         // Generate alerts for critical metrics
         generateAnalyticsAlerts();
       }
 
       function updateAnalyticsTimestamp() {
-        const timestampEl = document.getElementById('analyticsTimestamp');
+        const timestampEl = document.getElementById("analyticsTimestamp");
         if (!timestampEl || !allData.analyticsTimestamp) return;
-        
-        const timeStr = allData.analyticsTimestamp.toLocaleString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
+
+        const timeStr = allData.analyticsTimestamp.toLocaleString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
         });
         timestampEl.textContent = `Last updated: ${timeStr}`;
       }
 
       function generateAnalyticsAlerts() {
         if (!allData.analytics) return;
-        
-        const alertsContainer = document.getElementById('analyticsAlerts');
+
+        const alertsContainer = document.getElementById("analyticsAlerts");
         if (!alertsContainer) return;
-        
-        alertsContainer.innerHTML = '';
+
+        alertsContainer.innerHTML = "";
         const alerts = [];
-        
+
         // Check for burnout risks
         if (allData.analytics.burnout && allData.analytics.burnout.length > 0) {
-          const highRisk = allData.analytics.burnout.filter(b => b.risk === 'high');
+          const highRisk = allData.analytics.burnout.filter(
+            (b) => b.risk === "high",
+          );
           if (highRisk.length > 0) {
             alerts.push({
-              type: 'error',
-              icon: '⚠️',
-              title: 'High Burnout Risk Detected',
+              type: "error",
+              icon: "⚠️",
+              title: "High Burnout Risk Detected",
               message: `${highRisk.length} team member(s) working over ${analyticsThresholds.burnoutHigh}h/week on average`,
-              action: { label: 'View Details', onClick: 'showBurnoutDetails()' }
+              action: {
+                label: "View Details",
+                onClick: "showBurnoutDetails()",
+              },
             });
           }
         }
-        
+
         // Check for stalled issues
         if (allData.analytics.stalled && allData.analytics.stalled.length > 0) {
-          const criticalStalled = allData.analytics.stalled.filter(s => s.daysSince > analyticsThresholds.stalled * 2);
+          const criticalStalled = allData.analytics.stalled.filter(
+            (s) => s.daysSince > analyticsThresholds.stalled * 2,
+          );
           if (criticalStalled.length > 0) {
             alerts.push({
-              type: 'warning',
-              icon: '⏸️',
-              title: 'Critical Stalled Issues',
+              type: "warning",
+              icon: "⏸️",
+              title: "Critical Stalled Issues",
               message: `${criticalStalled.length} issue(s) with no activity for over ${analyticsThresholds.stalled * 2} days`,
-              action: { label: 'View Issues', onClick: 'showStalledDetails()' }
+              action: { label: "View Issues", onClick: "showStalledDetails()" },
             });
           }
         }
-        
+
         // Check for high rework percentage
         if (allData.analytics.rework && allData.analytics.rework.length > 0) {
-          const highRework = allData.analytics.rework.filter(r => r.reworkPct > analyticsThresholds.rework);
+          const highRework = allData.analytics.rework.filter(
+            (r) => r.reworkPct > analyticsThresholds.rework,
+          );
           if (highRework.length > 0) {
             alerts.push({
-              type: 'warning',
-              icon: '🔄',
-              title: 'High Rework Detected',
+              type: "warning",
+              icon: "🔄",
+              title: "High Rework Detected",
               message: `${highRework.length} issue(s) with over ${analyticsThresholds.rework}% time spent on rework`,
-              action: { label: 'View Analysis', onClick: 'showReworkDetails()' }
+              action: {
+                label: "View Analysis",
+                onClick: "showReworkDetails()",
+              },
             });
           }
         }
-        
+
         // Render alerts
-        alerts.forEach(alert => {
-          const alertEl = document.createElement('div');
+        alerts.forEach((alert) => {
+          const alertEl = document.createElement("div");
           alertEl.className = `analytics-alert alert-${alert.type}`;
           alertEl.innerHTML = `
             <div class="analytics-alert-icon">${alert.icon}</div>
             <div class="analytics-alert-content">
               <div class="analytics-alert-title">${alert.title}</div>
               <div class="analytics-alert-message">${alert.message}</div>
-              ${alert.action ? `
+              ${
+                alert.action
+                  ? `
                 <div class="analytics-alert-actions">
                   <button class="analytics-alert-button" onclick="${alert.action.onClick}">
                     ${alert.action.label}
                   </button>
                 </div>
-              ` : ''}
+              `
+                  : ""
+              }
             </div>
           `;
           alertsContainer.appendChild(alertEl);
@@ -2570,34 +2670,74 @@
       function configureThresholds(metricType) {
         const thresholdConfigs = {
           stalled: [
-            { key: 'stalled', label: 'Stalled Days', value: analyticsThresholds.stalled, unit: 'days' }
+            {
+              key: "stalled",
+              label: "Stalled Days",
+              value: analyticsThresholds.stalled,
+              unit: "days",
+            },
           ],
           burnout: [
-            { key: 'burnoutHigh', label: 'High Risk', value: analyticsThresholds.burnoutHigh, unit: 'hrs/week' },
-            { key: 'burnoutLow', label: 'Low Risk', value: analyticsThresholds.burnoutLow, unit: 'hrs/week' }
+            {
+              key: "burnoutHigh",
+              label: "High Risk",
+              value: analyticsThresholds.burnoutHigh,
+              unit: "hrs/week",
+            },
+            {
+              key: "burnoutLow",
+              label: "Low Risk",
+              value: analyticsThresholds.burnoutLow,
+              unit: "hrs/week",
+            },
           ],
           rework: [
-            { key: 'rework', label: 'Rework %', value: analyticsThresholds.rework, unit: '%' }
+            {
+              key: "rework",
+              label: "Rework %",
+              value: analyticsThresholds.rework,
+              unit: "%",
+            },
           ],
           anomalies: [
-            { key: 'largeEntry', label: 'Large Entry', value: analyticsThresholds.largeEntry, unit: 'hours' },
-            { key: 'tinyEntry', label: 'Tiny Entry', value: analyticsThresholds.tinyEntry, unit: 'hours' }
+            {
+              key: "largeEntry",
+              label: "Large Entry",
+              value: analyticsThresholds.largeEntry,
+              unit: "hours",
+            },
+            {
+              key: "tinyEntry",
+              label: "Tiny Entry",
+              value: analyticsThresholds.tinyEntry,
+              unit: "hours",
+            },
           ],
           estimation: [
-            { key: 'overEstimate', label: 'Over %', value: analyticsThresholds.overEstimate, unit: '%' },
-            { key: 'underEstimate', label: 'Under %', value: analyticsThresholds.underEstimate, unit: '%' }
+            {
+              key: "overEstimate",
+              label: "Over %",
+              value: analyticsThresholds.overEstimate,
+              unit: "%",
+            },
+            {
+              key: "underEstimate",
+              label: "Under %",
+              value: analyticsThresholds.underEstimate,
+              unit: "%",
+            },
           ],
-          workload: []
+          workload: [],
         };
-        
+
         const configs = thresholdConfigs[metricType];
         if (!configs || configs.length === 0) {
-          showToast('No configurable thresholds for this metric', 'info');
+          showToast("No configurable thresholds for this metric", "info");
           return;
         }
-        
+
         let formHtml = '<div class="threshold-config">';
-        configs.forEach(config => {
+        configs.forEach((config) => {
           formHtml += `
             <div class="threshold-item">
               <label>${config.label} (${config.unit})</label>
@@ -2605,8 +2745,8 @@
             </div>
           `;
         });
-        formHtml += '</div>';
-        
+        formHtml += "</div>";
+
         const modalContent = `
           <h3>Configure ${metricType.charAt(0).toUpperCase() + metricType.slice(1)} Thresholds</h3>
           ${formHtml}
@@ -2619,24 +2759,24 @@
             </button>
           </div>
         `;
-        
-        showModal('Configure Thresholds', modalContent);
+
+        showModal("Configure Thresholds", modalContent);
       }
 
       function saveThresholdChanges(metricType) {
         // Collect all threshold input values
         const inputs = document.querySelectorAll('[id^="threshold_"]');
-        inputs.forEach(input => {
-          const key = input.id.replace('threshold_', '');
+        inputs.forEach((input) => {
+          const key = input.id.replace("threshold_", "");
           const value = parseFloat(input.value);
           if (!isNaN(value) && value >= 0) {
             analyticsThresholds[key] = value;
           }
         });
-        
+
         saveThresholds();
         closeModal();
-        
+
         // Recalculate analytics with new thresholds
         updateAnalytics();
         renderDashboard();
@@ -2901,11 +3041,16 @@
         summary.textContent = `Found ${anomalies.length} anomalous entries.`;
         list.innerHTML = anomalies
           .slice(0, 8)
-          .map(
-            (entry) => `
-                <div class="help-text">#${entry.issueId} ${entry.issueTitle} • ${entry.hours.toFixed(2)}h • ${entry.reasons.join(", ")}</div>
-            `,
-          )
+          .map((entry) => {
+            const issueId = entry.issueId || entry.iid || "N/A";
+            const issueTitle = entry.issueTitle || entry.title || "";
+            const reasons = Array.isArray(entry.reasons)
+              ? entry.reasons.join(", ")
+              : entry.reason || "Unknown";
+            return `
+                <div class="help-text">#${issueId} ${issueTitle} • ${Math.abs(entry.hours).toFixed(2)}h • ${reasons}</div>
+            `;
+          })
           .join("");
       }
 
@@ -3291,10 +3436,10 @@
         const modal = document.getElementById("timeEntriesModal");
         const modalTitle = document.getElementById("modalTitle");
         const modalBody = document.getElementById("modalBody");
-        
+
         modalTitle.textContent = title;
         modalBody.innerHTML = bodyContent;
-        
+
         modal.classList.add("active");
         modal.setAttribute("aria-hidden", "false");
       }
@@ -3302,80 +3447,110 @@
       // Detailed drill-down modal functions
       function showWorkloadDetails() {
         if (!allData.analytics || !allData.analytics.workload) {
-          showToast('No workload data available', 'info');
+          showToast("No workload data available", "info");
           return;
         }
-        
+
         const workload = allData.analytics.workload;
         let content = '<div style="max-height: 400px; overflow-y: auto;">';
         content += '<table style="width: 100%; border-collapse: collapse;">';
-        content += '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Member</th>';
-        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Total Hours</th>';
-        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Utilization</th></tr></thead>';
-        content += '<tbody>';
-        
-        workload.forEach(member => {
-          const utilization = member.utilization ? `${member.utilization.toFixed(1)}%` : 'N/A';
+        content +=
+          '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Member</th>';
+        content +=
+          '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Total Hours</th>';
+        content +=
+          '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Utilization</th></tr></thead>';
+        content += "<tbody>";
+
+        workload.forEach((member) => {
+          const utilization = member.utilization
+            ? `${(member.utilization * 100).toFixed(1)}%`
+            : "N/A";
+          const memberName = member.name || member.username || "Unknown";
           content += `<tr>
-            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${member.member}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${memberName}</td>
             <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${member.hours.toFixed(2)}h</td>
             <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${utilization}</td>
           </tr>`;
         });
-        
-        content += '</tbody></table></div>';
-        showModal('Workload Distribution Details', content);
+
+        content += "</tbody></table></div>";
+        showModal("Workload Distribution Details", content);
       }
 
       function showStalledDetails() {
-        if (!allData.analytics || !allData.analytics.stalled || allData.analytics.stalled.length === 0) {
-          showToast('No stalled issues found', 'info');
+        if (
+          !allData.analytics ||
+          !allData.analytics.stalled ||
+          allData.analytics.stalled.length === 0
+        ) {
+          showToast("No stalled issues found", "info");
           return;
         }
-        
+
         const stalled = allData.analytics.stalled;
         let content = '<div style="max-height: 400px; overflow-y: auto;">';
-        content += '<p style="margin-bottom: 16px; color: var(--text-secondary);">Issues with no activity for over ' + analyticsThresholds.stalled + ' days.</p>';
+        content +=
+          '<p style="margin-bottom: 16px; color: var(--text-secondary);">Issues with no activity for over ' +
+          analyticsThresholds.stalled +
+          " days.</p>";
         content += '<table style="width: 100%; border-collapse: collapse;">';
-        content += '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Issue</th>';
-        content += '<th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Last Activity</th>';
-        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Days Since</th></tr></thead>';
-        content += '<tbody>';
-        
-        stalled.forEach(issue => {
+        content +=
+          '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Issue</th>';
+        content +=
+          '<th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Last Activity</th>';
+        content +=
+          '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Days Since</th></tr></thead>';
+        content += "<tbody>";
+
+        stalled.forEach((issue) => {
           const daysSince = Math.floor(issue.daysSince);
-          const badgeClass = daysSince > analyticsThresholds.stalled * 2 ? 'error' : 'warning';
+          const badgeClass =
+            daysSince > analyticsThresholds.stalled * 2 ? "error" : "warning";
+          const issueId = issue.issueId || issue.iid || "N/A";
+          const lastActivity =
+            issue.lastEntryDate || issue.lastEntry || "Unknown";
           content += `<tr>
-            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">#${issue.iid}: ${issue.title}</td>
-            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${issue.lastEntry || 'Unknown'}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">#${issueId}: ${issue.title}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${lastActivity}</td>
             <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">
               <span class="badge badge-${badgeClass}">${daysSince} days</span>
             </td>
           </tr>`;
         });
-        
-        content += '</tbody></table></div>';
-        showModal('Stalled Issues Details', content);
+
+        content += "</tbody></table></div>";
+        showModal("Stalled Issues Details", content);
       }
 
       function showReworkDetails() {
-        if (!allData.analytics || !allData.analytics.rework || allData.analytics.rework.length === 0) {
-          showToast('No rework detected', 'info');
+        if (
+          !allData.analytics ||
+          !allData.analytics.rework ||
+          allData.analytics.rework.length === 0
+        ) {
+          showToast("No rework detected", "info");
           return;
         }
-        
+
         const rework = allData.analytics.rework;
         let content = '<div style="max-height: 400px; overflow-y: auto;">';
-        content += '<p style="margin-bottom: 16px; color: var(--text-secondary);">Issues with negative time entries indicating rework or corrections.</p>';
+        content +=
+          '<p style="margin-bottom: 16px; color: var(--text-secondary);">Issues with negative time entries indicating rework or corrections.</p>';
         content += '<table style="width: 100%; border-collapse: collapse;">';
-        content += '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Issue</th>';
-        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Negative Hours</th>';
-        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Total Hours</th>';
-        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Rework %</th></tr></thead>';
-        content += '<tbody>';
-        
-        rework.forEach(issue => {
-          const badgeClass = issue.reworkPct > analyticsThresholds.rework ? 'error' : 'warning';
+        content +=
+          '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Issue</th>';
+        content +=
+          '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Negative Hours</th>';
+        content +=
+          '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Total Hours</th>';
+        content +=
+          '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Rework %</th></tr></thead>';
+        content += "<tbody>";
+
+        rework.forEach((issue) => {
+          const badgeClass =
+            issue.reworkPct > analyticsThresholds.rework ? "error" : "warning";
           content += `<tr>
             <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">#${issue.iid}: ${issue.title}</td>
             <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right; color: var(--error-text);">${Math.abs(issue.negativeHours).toFixed(2)}h</td>
@@ -3385,61 +3560,92 @@
             </td>
           </tr>`;
         });
-        
-        content += '</tbody></table></div>';
-        showModal('Rework Analysis Details', content);
+
+        content += "</tbody></table></div>";
+        showModal("Rework Analysis Details", content);
       }
 
       function showAnomaliesDetails() {
-        if (!allData.analytics || !allData.analytics.anomalies || allData.analytics.anomalies.length === 0) {
-          showToast('No anomalies detected', 'info');
+        if (
+          !allData.analytics ||
+          !allData.analytics.anomalies ||
+          allData.analytics.anomalies.length === 0
+        ) {
+          showToast("No anomalies detected", "info");
           return;
         }
-        
+
         const anomalies = allData.analytics.anomalies;
         let content = '<div style="max-height: 400px; overflow-y: auto;">';
-        content += '<p style="margin-bottom: 16px; color: var(--text-secondary);">Unusual time entries detected based on configured thresholds.</p>';
+        content +=
+          '<p style="margin-bottom: 16px; color: var(--text-secondary);">Unusual time entries detected based on configured thresholds.</p>';
         content += '<table style="width: 100%; border-collapse: collapse;">';
-        content += '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Date</th>';
-        content += '<th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Issue</th>';
-        content += '<th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Member</th>';
-        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Hours</th>';
-        content += '<th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Reason</th></tr></thead>';
-        content += '<tbody>';
-        
-        anomalies.forEach(entry => {
+        content +=
+          '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Date</th>';
+        content +=
+          '<th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Issue</th>';
+        content +=
+          '<th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Member</th>';
+        content +=
+          '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Hours</th>';
+        content +=
+          '<th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Reason</th></tr></thead>';
+        content += "<tbody>";
+
+        anomalies.forEach((entry) => {
+          const issueId = entry.issueId || entry.iid || "N/A";
+          const memberName =
+            entry.author || entry.username || entry.member || "Unknown";
+          const reason = Array.isArray(entry.reasons)
+            ? entry.reasons.join(", ")
+            : entry.reason || "Unknown";
           content += `<tr>
             <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${entry.date}</td>
-            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">#${entry.iid || 'N/A'}</td>
-            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${entry.member || 'Unknown'}</td>
-            <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${entry.hours.toFixed(2)}h</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">#${issueId}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${memberName}</td>
+            <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${Math.abs(entry.hours).toFixed(2)}h</td>
             <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">
-              <span class="badge badge-warning">${entry.reason}</span>
+              <span class="badge badge-warning">${reason}</span>
             </td>
           </tr>`;
         });
-        
-        content += '</tbody></table></div>';
-        showModal('Anomalies Details', content);
+
+        content += "</tbody></table></div>";
+        showModal("Anomalies Details", content);
       }
 
       function showBurnoutDetails() {
-        if (!allData.analytics || !allData.analytics.burnout || allData.analytics.burnout.length === 0) {
-          showToast('No burnout risk data available', 'info');
+        if (
+          !allData.analytics ||
+          !allData.analytics.burnout ||
+          allData.analytics.burnout.length === 0
+        ) {
+          showToast("No burnout risk data available", "info");
           return;
         }
-        
+
         const burnout = allData.analytics.burnout;
         let content = '<div style="max-height: 400px; overflow-y: auto;">';
-        content += '<p style="margin-bottom: 16px; color: var(--text-secondary);">Rolling 4-week average hours per team member. High risk: >' + analyticsThresholds.burnoutHigh + 'h/week</p>';
+        content +=
+          '<p style="margin-bottom: 16px; color: var(--text-secondary);">Rolling 4-week average hours per team member. High risk: >' +
+          analyticsThresholds.burnoutHigh +
+          "h/week</p>";
         content += '<table style="width: 100%; border-collapse: collapse;">';
-        content += '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Member</th>';
-        content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Avg Hours/Week</th>';
-        content += '<th style="text-align: center; padding: 8px; border-bottom: 2px solid var(--border-color);">Risk Level</th></tr></thead>';
-        content += '<tbody>';
-        
-        burnout.forEach(member => {
-          const badgeClass = member.risk === 'high' ? 'error' : member.risk === 'low' ? 'info' : 'success';
+        content +=
+          '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Member</th>';
+        content +=
+          '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Avg Hours/Week</th>';
+        content +=
+          '<th style="text-align: center; padding: 8px; border-bottom: 2px solid var(--border-color);">Risk Level</th></tr></thead>';
+        content += "<tbody>";
+
+        burnout.forEach((member) => {
+          const badgeClass =
+            member.risk === "high"
+              ? "error"
+              : member.risk === "low"
+                ? "info"
+                : "success";
           content += `<tr>
             <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">${member.member}</td>
             <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${member.avgHoursPerWeek.toFixed(2)}h</td>
@@ -3448,56 +3654,101 @@
             </td>
           </tr>`;
         });
-        
-        content += '</tbody></table></div>';
-        showModal('Burnout Risk Details', content);
+
+        content += "</tbody></table></div>";
+        showModal("Burnout Risk Details", content);
       }
 
       function showEstimationDetails() {
         if (!allData.analytics || !allData.analytics.estimation) {
-          showToast('No estimation data available', 'info');
+          showToast("No estimation data available", "info");
           return;
         }
-        
+
         const estimation = allData.analytics.estimation;
+        const totalIssues = estimation.results ? estimation.results.length : 0;
+        const summary = estimation.summary || {
+          under: 0,
+          accurate: 0,
+          over: 0,
+        };
+
         let content = '<div style="max-height: 400px; overflow-y: auto;">';
-        content += '<div style="margin-bottom: 16px; padding: 12px; background: var(--bg-secondary); border-radius: 6px;">';
+        content +=
+          '<div style="margin-bottom: 16px; padding: 12px; background: var(--bg-secondary); border-radius: 6px;">';
         content += '<h4 style="margin: 0 0 8px 0;">Summary</h4>';
-        content += '<p style="margin: 4px 0; color: var(--text-secondary);">Total Issues: <strong>' + estimation.totalIssues + '</strong></p>';
-        content += '<p style="margin: 4px 0; color: var(--text-secondary);">Accurately Estimated: <strong>' + estimation.accurate + '</strong> (' + ((estimation.accurate/estimation.totalIssues)*100).toFixed(1) + '%)</p>';
-        content += '<p style="margin: 4px 0; color: var(--text-secondary);">Under-Estimated: <strong>' + estimation.underEstimated + '</strong> (' + ((estimation.underEstimated/estimation.totalIssues)*100).toFixed(1) + '%)</p>';
-        content += '<p style="margin: 4px 0; color: var(--text-secondary);">Over-Estimated: <strong>' + estimation.overEstimated + '</strong> (' + ((estimation.overEstimated/estimation.totalIssues)*100).toFixed(1) + '%)</p>';
-        content += '</div>';
-        
-        if (estimation.issues && estimation.issues.length > 0) {
+        content +=
+          '<p style="margin: 4px 0; color: var(--text-secondary);">Total Issues: <strong>' +
+          totalIssues +
+          "</strong></p>";
+        content +=
+          '<p style="margin: 4px 0; color: var(--text-secondary);">Accurately Estimated: <strong>' +
+          summary.accurate +
+          "</strong> (" +
+          (totalIssues > 0
+            ? ((summary.accurate / totalIssues) * 100).toFixed(1)
+            : "0.0") +
+          "%)</p>";
+        content +=
+          '<p style="margin: 4px 0; color: var(--text-secondary);">Under-Estimated: <strong>' +
+          summary.under +
+          "</strong> (" +
+          (totalIssues > 0
+            ? ((summary.under / totalIssues) * 100).toFixed(1)
+            : "0.0") +
+          "%)</p>";
+        content +=
+          '<p style="margin: 4px 0; color: var(--text-secondary);">Over-Estimated: <strong>' +
+          summary.over +
+          "</strong> (" +
+          (totalIssues > 0
+            ? ((summary.over / totalIssues) * 100).toFixed(1)
+            : "0.0") +
+          "%)</p>";
+        content += "</div>";
+
+        if (estimation.results && estimation.results.length > 0) {
           content += '<h4 style="margin: 16px 0 8px 0;">Individual Issues</h4>';
           content += '<table style="width: 100%; border-collapse: collapse;">';
-          content += '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Issue</th>';
-          content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Estimated</th>';
-          content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Actual</th>';
-          content += '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Variance</th></tr></thead>';
-          content += '<tbody>';
-          
-          estimation.issues.forEach(issue => {
-            const variance = issue.actual - issue.estimated;
-            const variancePct = (variance / issue.estimated) * 100;
-            const badgeClass = Math.abs(variancePct) <= 10 ? 'success' : (variancePct > 0 ? 'warning' : 'info');
-            
+          content +=
+            '<thead><tr><th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color);">Issue</th>';
+          content +=
+            '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Estimated</th>';
+          content +=
+            '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Actual</th>';
+          content +=
+            '<th style="text-align: right; padding: 8px; border-bottom: 2px solid var(--border-color);">Variance</th></tr></thead>';
+          content += "<tbody>";
+
+          estimation.results.forEach((issue) => {
+            const issueId = issue.issueId || issue.iid || "N/A";
+            const estimated = issue.estimateHours || 0;
+            const actual = issue.actualHours || 0;
+            const variance = actual - estimated;
+            const variancePct =
+              estimated > 0 ? (variance / estimated) * 100 : 0;
+            const badgeClass =
+              Math.abs(variancePct) <= 10
+                ? "success"
+                : variancePct > 0
+                  ? "warning"
+                  : "info";
+
             content += `<tr>
-              <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">#${issue.iid}: ${issue.title}</td>
-              <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${issue.estimated.toFixed(2)}h</td>
-              <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${issue.actual.toFixed(2)}h</td>
+              <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">#${issueId}: ${issue.title}</td>
+              <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${estimated.toFixed(2)}h</td>
+              <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">${actual.toFixed(2)}h</td>
               <td style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: right;">
-                <span class="badge badge-${badgeClass}">${variance > 0 ? '+' : ''}${variance.toFixed(2)}h (${variancePct > 0 ? '+' : ''}${variancePct.toFixed(1)}%)</span>
+                <span class="badge badge-${badgeClass}">${variance > 0 ? "+" : ""}${variance.toFixed(2)}h (${variancePct > 0 ? "+" : ""}${variancePct.toFixed(1)}%)</span>
               </td>
             </tr>`;
           });
-          
-          content += '</tbody></table>';
+
+          content += "</tbody></table>";
         }
-        
-        content += '</div>';
-        showModal('Estimation Accuracy Details', content);
+
+        content += "</div>";
+        showModal("Estimation Accuracy Details", content);
       }
 
       // Close modal when clicking outside
