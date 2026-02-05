@@ -4,14 +4,36 @@ A beautiful, interactive dashboard for visualizing GitLab time tracking data acr
 
 ## Features
 
-- **Cumulative time tracking chart** showing hours over time per team member
-- **Team member statistics** with detailed time entry breakdowns
-- **PBI (Issue) tracking** showing hours logged per issue
-- **Time entry summaries** display comments/descriptions from each time log
-- **Flexible filtering** - Filter by date range OR milestone
-- **Project browser** - Browse and select from your accessible GitLab projects
-- **Milestone tracking** - View time entries for specific project milestones
-- **Beautiful, modern UI** with responsive design
+### Data Visualization
+- **Cumulative Time Chart** - Interactive line chart showing cumulative hours over time per team member
+- **Team Member Statistics** - Sortable table showing hours and PBI count per person
+- **PBI (Issue) Tracking** - Hours logged per issue with contributor information
+- **Progress Bars** - Visual representation of relative time spent
+
+### Time Entry Details
+- **Time Entry Summaries** - Display comments/descriptions from time logs
+- **Negative Entry Support** - Properly handles subtracted/deleted time with visual indicators (red highlighting)
+- **Entry Breakdown** - Click any team member to see all their time entries with dates, issues, and comments
+- **Pagination Support** - Loads all issues and all notes (no 100-item limits)
+
+### Filtering & Search
+- **Date Range Filtering** - Filter time entries by start and end date (default: last 30 days)
+- **Milestone Filtering** - Filter by project milestone with automatic date range detection
+- **Mutually Exclusive Filters** - Choose between date range OR milestone filtering
+- **Advanced Project Browser** - Multi-criteria search for projects with filtering options:
+  - Starred projects
+  - Projects where you're a member
+  - Projects you own
+  - Archived/inactive projects
+  - Text search by name or path
+  - Select All / Clear All shortcuts
+
+### User Interface
+- **Modern, Responsive Design** - Works on desktop and mobile devices
+- **Auto-loading Configuration** - Load credentials from .env file automatically
+- **Progress Indicators** - Shows loading progress when fetching large datasets
+- **Error Handling** - Clear error messages for troubleshooting
+- **Single File Application** - Entire app in one HTML file for easy deployment
 
 ## Quick Start
 
@@ -46,7 +68,7 @@ Your GitLab access token needs the following scopes:
 - `read_repository` - Read access to the repository (optional but recommended)
 
 To create a token:
-1. Go to GitLab → Preferences → Access Tokens
+1. Go to GitLab -> Preferences -> Access Tokens
 2. Create a personal access token with the scopes above
 3. Copy the token to your `.env` file or enter it manually
 
@@ -90,17 +112,31 @@ This description will show up when you click on the team member in the dashboard
 
 ## Project Browser
 
-Can't remember your project ID? Use the **Browse Projects** button!
+Can't remember your project ID? Use the **Browse Projects** button with advanced filtering!
 
+### Features:
+1. **Multiple Filter Options** (check/uncheck combinations):
+   - **Starred** - Projects you've starred
+   - **My Projects** - Projects where you're a member
+   - **Owned by Me** - Projects you own
+   - **Archived** - Inactive/archived projects
+
+2. **Search Bar** - Filter results by project name or path (press Enter to search)
+
+3. **Smart Display**:
+   - Shows project name with visual badges for starred and archived projects
+   - Full project path
+   - Project ID
+   - Results count
+   - Sorted by last activity
+
+### How to Use:
 1. Enter your GitLab URL and Access Token
 2. Click "Browse Projects"
-3. Browse through your accessible projects (sorted by last activity)
-4. Click on a project to auto-fill the Project ID field
-
-The browser shows:
-- Project name
-- Full project path
-- Project ID
+3. Select your filter options (multiple can be selected)
+4. Optionally, type in the search bar
+5. Click "Search Projects" or press Enter
+6. Click on a project to auto-fill the Project ID field
 
 ## Project Structure
 

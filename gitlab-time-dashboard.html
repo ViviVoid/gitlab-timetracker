@@ -465,6 +465,62 @@
             color: #667eea;
             font-weight: 600;
         }
+
+        .project-filters {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filter-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .filter-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .checkbox-label:hover {
+            background: #fff;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .checkbox-label span {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .filter-search {
+            margin-bottom: 15px;
+        }
+
+        .filter-search input {
+            width: 100%;
+        }
+
+        .search-button {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -620,10 +676,44 @@
                 <button class="modal-close" onclick="closeProjectBrowser()">&times;</button>
             </div>
             <div class="modal-body" id="projectBrowserBody">
+                <div class="project-filters">
+                    <div class="filter-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h3 style="margin: 0;">Filter Options</h3>
+                            <div style="display: flex; gap: 10px;">
+                                <button onclick="selectAllFilters()" style="padding: 6px 12px; font-size: 12px; background: #667eea;">Select All</button>
+                                <button onclick="clearAllFilters()" style="padding: 6px 12px; font-size: 12px; background: #999;">Clear All</button>
+                            </div>
+                        </div>
+                        <div class="filter-checkboxes">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="filterStarred" checked>
+                                <span>⭐ Starred</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="filterMember" checked>
+                                <span>👤 My Projects</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="filterOwned">
+                                <span>🔑 Owned by Me</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="filterInactive">
+                                <span>💤 Archived</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter-search">
+                        <input type="text" id="projectSearch" placeholder="Search by name or path..." onkeypress="if(event.key==='Enter') searchProjects()">
+                    </div>
+                    <button onclick="searchProjects()" class="search-button">🔍 Search Projects</button>
+                </div>
                 <div class="loading" id="projectsLoading" style="display: none;">
                     <div class="spinner"></div>
                     <p>Loading projects...</p>
                 </div>
+                <div id="projectsResultCount" style="margin-bottom: 10px; color: #666; font-size: 14px;"></div>
                 <div id="projectsList" class="project-list"></div>
             </div>
         </div>
@@ -798,31 +888,107 @@
             }
 
             document.getElementById('projectBrowserModal').classList.add('active');
+            // Auto-search on open
+            searchProjects();
+        }
+
+        async function searchProjects() {
+            const gitlabUrl = document.getElementById('gitlabUrl').value.trim();
+            const accessToken = document.getElementById('accessToken').value.trim();
+
             document.getElementById('projectsLoading').style.display = 'block';
             document.getElementById('projectsList').innerHTML = '';
 
-            try {
-                const response = await fetch(
-                    `${gitlabUrl}/api/v4/projects?membership=true&per_page=100&order_by=last_activity_at`,
-                    {
-                        headers: {
-                            'PRIVATE-TOKEN': accessToken
-                        }
-                    }
-                );
+            // Get filter options
+            const filterStarred = document.getElementById('filterStarred').checked;
+            const filterMember = document.getElementById('filterMember').checked;
+            const filterOwned = document.getElementById('filterOwned').checked;
+            const filterInactive = document.getElementById('filterInactive').checked;
+            const searchText = document.getElementById('projectSearch').value.trim().toLowerCase();
 
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch projects: ${response.status}`);
+            // Check if at least one filter is selected
+            if (!filterStarred && !filterMember && !filterOwned && !filterInactive) {
+                document.getElementById('projectsLoading').style.display = 'none';
+                document.getElementById('projectsList').innerHTML = 
+                    '<div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Please select at least one filter option</p></div>';
+                document.getElementById('projectsResultCount').textContent = '';
+                return;
+            }
+
+            try {
+                let allProjects = [];
+
+                // Fetch starred projects
+                if (filterStarred) {
+                    const starredProjects = await fetchAllPages(
+                        `${gitlabUrl}/api/v4/projects?starred=true&per_page=100`,
+                        accessToken
+                    );
+                    allProjects = allProjects.concat(starredProjects.map(p => ({...p, source: 'starred'})));
                 }
 
-                const projects = await response.json();
+                // Fetch projects user is a member of
+                if (filterMember) {
+                    const memberProjects = await fetchAllPages(
+                        `${gitlabUrl}/api/v4/projects?membership=true&per_page=100&order_by=last_activity_at`,
+                        accessToken
+                    );
+                    allProjects = allProjects.concat(memberProjects.map(p => ({...p, source: 'member'})));
+                }
+
+                // Fetch projects owned by user
+                if (filterOwned) {
+                    const ownedProjects = await fetchAllPages(
+                        `${gitlabUrl}/api/v4/projects?owned=true&per_page=100`,
+                        accessToken
+                    );
+                    allProjects = allProjects.concat(ownedProjects.map(p => ({...p, source: 'owned'})));
+                }
+
+                // Fetch archived projects
+                if (filterInactive) {
+                    const archivedProjects = await fetchAllPages(
+                        `${gitlabUrl}/api/v4/projects?archived=true&per_page=100`,
+                        accessToken
+                    );
+                    allProjects = allProjects.concat(archivedProjects.map(p => ({...p, source: 'archived'})));
+                }
+
+                // Remove duplicates by project ID (keep first occurrence)
+                const uniqueProjects = [];
+                const seenIds = new Set();
+                allProjects.forEach(project => {
+                    if (!seenIds.has(project.id)) {
+                        seenIds.add(project.id);
+                        uniqueProjects.push(project);
+                    }
+                });
+
+                // Filter by search text
+                let filteredProjects = uniqueProjects;
+                if (searchText) {
+                    filteredProjects = uniqueProjects.filter(project => 
+                        project.name.toLowerCase().includes(searchText) ||
+                        project.path_with_namespace.toLowerCase().includes(searchText)
+                    );
+                }
+
+                // Sort by last activity
+                filteredProjects.sort((a, b) => 
+                    new Date(b.last_activity_at) - new Date(a.last_activity_at)
+                );
+
                 document.getElementById('projectsLoading').style.display = 'none';
 
+                // Display result count
+                document.getElementById('projectsResultCount').textContent = 
+                    `Found ${filteredProjects.length} project${filteredProjects.length === 1 ? '' : 's'}`;
+
                 const projectsList = document.getElementById('projectsList');
-                if (projects.length === 0) {
+                if (filteredProjects.length === 0) {
                     projectsList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📁</div><p>No projects found</p></div>';
                 } else {
-                    projectsList.innerHTML = projects.map(project => {
+                    projectsList.innerHTML = filteredProjects.map(project => {
                         const escapedName = project.name
                             .replace(/&/g, '&amp;')
                             .replace(/</g, '&lt;')
@@ -834,10 +1000,21 @@
                             .replace(/>/g, '&gt;')
                             .replace(/"/g, '&quot;');
                         
+                        // Add badges
+                        let badges = '';
+                        if (project.star_count > 0) badges += '⭐ ';
+                        if (project.archived) badges += '💤 ';
+                        
+                        // Check if current user owns the project
+                        if (project.owner && project.permissions && project.permissions.project_access) {
+                            const accessLevel = project.permissions.project_access.access_level;
+                            if (accessLevel >= 50) badges += '🔑 '; // Owner/Maintainer
+                        }
+                        
                         return `
                             <div class="project-item" onclick="selectProject(${project.id}, '${escapedName.replace(/'/g, "\\'")}')">
                                 <div class="project-info">
-                                    <div class="project-name">${escapedName}</div>
+                                    <div class="project-name">${badges}${escapedName}</div>
                                     <div class="project-path">${escapedPath}</div>
                                 </div>
                                 <div class="project-id">#${project.id}</div>
@@ -851,6 +1028,34 @@
             }
         }
 
+        async function fetchAllPages(url, accessToken) {
+            let allItems = [];
+            let page = 1;
+            let hasMore = true;
+
+            while (hasMore && page <= 10) { // Limit to 10 pages per type
+                const response = await fetch(`${url}&page=${page}`, {
+                    headers: {
+                        'PRIVATE-TOKEN': accessToken
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch: ${response.status}`);
+                }
+
+                const items = await response.json();
+                if (items.length === 0) {
+                    hasMore = false;
+                } else {
+                    allItems = allItems.concat(items);
+                    page++;
+                }
+            }
+
+            return allItems;
+        }
+
         function selectProject(projectId, projectName) {
             document.getElementById('projectId').value = projectId;
             closeProjectBrowser();
@@ -862,6 +1067,20 @@
 
         function closeProjectBrowser() {
             document.getElementById('projectBrowserModal').classList.remove('active');
+        }
+
+        function selectAllFilters() {
+            document.getElementById('filterStarred').checked = true;
+            document.getElementById('filterMember').checked = true;
+            document.getElementById('filterOwned').checked = true;
+            document.getElementById('filterInactive').checked = true;
+        }
+
+        function clearAllFilters() {
+            document.getElementById('filterStarred').checked = false;
+            document.getElementById('filterMember').checked = false;
+            document.getElementById('filterOwned').checked = false;
+            document.getElementById('filterInactive').checked = false;
         }
 
         // Call on page load
