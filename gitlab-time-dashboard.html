@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitLab Time Tracking Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .config-section {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .date-filter-section {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c33;
+        }
+
+        .dashboard {
+            display: grid;
+            gap: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            color: #333;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 500px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .hours {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .member-row {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .member-row:hover {
+            background: #f0f0f0 !important;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 25px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 25px;
+            max-height: calc(80vh - 100px);
+            overflow-y: auto;
+        }
+
+        .time-entry {
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .time-entry:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+        .time-entry:last-child {
+            margin-bottom: 0;
+        }
+
+        .time-entry-info {
+            flex: 1;
+        }
+
+        .time-entry-date {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .time-entry-pbi {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .time-entry-comment {
+            font-size: 13px;
+            color: #666;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+            font-style: italic;
+        }
+
+        .time-entry-hours {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 20px;
+            margin-left: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 GitLab Time Tracking Dashboard</h1>
+            <div class="config-section">
+                <div class="input-group">
+                    <label for="gitlabUrl">GitLab URL</label>
+                    <input type="text" id="gitlabUrl" placeholder="https://gitlab.com" value="https://gitlab.com">
+                </div>
+                <div class="input-group">
+                    <label for="accessToken">Access Token</label>
+                    <input type="password" id="accessToken" placeholder="Your GitLab access token">
+                </div>
+                <div class="input-group">
+                    <label for="projectId">Project ID</label>
+                    <input type="text" id="projectId" placeholder="12345">
+                </div>
+                <div class="input-group">
+                    <label>&nbsp;</label>
+                    <button onclick="fetchData()">Load Data</button>
+                </div>
+            </div>
+            
+            <div class="date-filter-section">
+                <div class="input-group">
+                    <label for="startDate">Start Date</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="input-group">
+                    <label for="endDate">End Date</label>
+                    <input type="date" id="endDate">
+                </div>
+                <div class="input-group">
+                    <label>&nbsp;</label>
+                    <button onclick="applyDateFilter()">Apply Filter</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="error" style="display: none;" class="error"></div>
+        <div id="loading" style="display: none;" class="loading">
+            <div class="spinner"></div>
+            <p>Fetching data from GitLab...</p>
+        </div>
+
+        <div id="dashboard" style="display: none;" class="dashboard">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Hours Logged</div>
+                    <div class="stat-value" id="totalHours">0h</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active PBIs</div>
+                    <div class="stat-value" id="totalPbis">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Team Members</div>
+                    <div class="stat-value" id="totalMembers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Hours per Person</div>
+                    <div class="stat-value" id="avgHours">0h</div>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h2>Cumulative Hours by Team Member</h2>
+                <div class="chart-container">
+                    <canvas id="cumulativeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Hours by PBI</h2>
+                <table id="pbiTable">
+                    <thead>
+                        <tr>
+                            <th>PBI #</th>
+                            <th>Title</th>
+                            <th>Assignee</th>
+                            <th>Hours Logged</th>
+                            <th>Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pbiTableBody"></tbody>
+                </table>
+                <div id="noPbiData" class="no-data" style="display: none;">
+                    No PBI data available. Make sure issues have time tracking entries.
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Hours by Team Member <small style="color: #999; font-size: 14px;">(Click to view details)</small></h2>
+                <table id="memberTable">
+                    <thead>
+                        <tr>
+                            <th>Team Member</th>
+                            <th>PBIs Worked On</th>
+                            <th>Total Hours</th>
+                            <th>Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody id="memberTableBody"></tbody>
+                </table>
+                <div id="noMemberData" class="no-data" style="display: none;">
+                    No team member data available.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for time entries -->
+    <div id="timeEntriesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Time Entries</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Time entries will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allData = {
+            issues: [],
+            rawTimeEntries: [],
+            filteredTimeEntries: [],
+            cumulativeChart: null
+        };
+
+        let dateFilter = {
+            start: null,
+            end: null
+        };
+
+        // Initialize date filters to last month
+        function initializeDateFilters() {
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setMonth(startDate.getMonth() - 1);
+
+            document.getElementById('startDate').valueAsDate = startDate;
+            document.getElementById('endDate').valueAsDate = endDate;
+
+            dateFilter.start = startDate.toISOString().split('T')[0];
+            dateFilter.end = endDate.toISOString().split('T')[0];
+        }
+
+        // Call on page load
+        initializeDateFilters();
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('dashboard').style.display = show ? 'none' : 'block';
+        }
+
+        async function fetchData() {
+            const gitlabUrl = document.getElementById('gitlabUrl').value.trim();
+            const accessToken = document.getElementById('accessToken').value.trim();
+            const projectId = document.getElementById('projectId').value.trim();
+
+            if (!gitlabUrl || !accessToken || !projectId) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            showLoading(true);
+            document.getElementById('error').style.display = 'none';
+
+            try {
+                // Fetch all issues from the project
+                const issuesResponse = await fetch(
+                    `${gitlabUrl}/api/v4/projects/${projectId}/issues?per_page=100&scope=all`,
+                    {
+                        headers: {
+                            'PRIVATE-TOKEN': accessToken
+                        }
+                    }
+                );
+
+                if (!issuesResponse.ok) {
+                    throw new Error(`Failed to fetch issues: ${issuesResponse.status} ${issuesResponse.statusText}`);
+                }
+
+                const issues = await issuesResponse.json();
+
+                // Fetch time stats and notes for each issue
+                const issueDataPromises = issues.map(async issue => {
+                    const timeStatsRes = await fetch(
+                        `${gitlabUrl}/api/v4/projects/${projectId}/issues/${issue.iid}/time_stats`,
+                        {
+                            headers: {
+                                'PRIVATE-TOKEN': accessToken
+                            }
+                        }
+                    );
+
+                    // Fetch notes (comments) which contain time tracking entries
+                    const notesRes = await fetch(
+                        `${gitlabUrl}/api/v4/projects/${projectId}/issues/${issue.iid}/notes?per_page=100`,
+                        {
+                            headers: {
+                                'PRIVATE-TOKEN': accessToken
+                            }
+                        }
+                    );
+
+                    const timeStats = timeStatsRes.ok ? await timeStatsRes.json() : null;
+                    const notes = notesRes.ok ? await notesRes.json() : [];
+
+                    // Filter notes that are time tracking entries
+                    const timeEntries = notes.filter(note => {
+                        return note.body && (
+                            note.body.includes('added') && note.body.includes('of time spent') ||
+                            note.body.includes('subtracted') && note.body.includes('of time spent') ||
+                            note.body.match(/\/spend|\/spent/)
+                        );
+                    }).map(note => {
+                        // Parse time from note body
+                        let hours = 0;
+                        const match = note.body.match(/(\d+(?:\.\d+)?)\s*(h|hour|hours|m|min|minute|minutes|d|day|days)/i);
+                        if (match) {
+                            const value = parseFloat(match[1]);
+                            const unit = match[2].toLowerCase();
+                            if (unit.startsWith('h')) {
+                                hours = value;
+                            } else if (unit.startsWith('m')) {
+                                hours = value / 60;
+                            } else if (unit.startsWith('d')) {
+                                hours = value * 8;
+                            }
+                        }
+
+                        return {
+                            author: note.author.name,
+                            username: note.author.username,
+                            date: note.created_at.split('T')[0],
+                            hours: hours,
+                            body: note.body
+                        };
+                    });
+
+                    return {
+                        ...issue,
+                        timeStats: timeStats,
+                        timeEntries: timeEntries
+                    };
+                });
+
+                allData.issues = await Promise.all(issueDataPromises);
+
+                // Collect all time entries
+                allData.rawTimeEntries = [];
+                allData.issues.forEach(issue => {
+                    if (issue.timeEntries && issue.timeEntries.length > 0) {
+                        issue.timeEntries.forEach(entry => {
+                            allData.rawTimeEntries.push({
+                                ...entry,
+                                issueId: issue.iid,
+                                issueTitle: issue.title
+                            });
+                        });
+                    }
+                });
+
+                applyDateFilter();
+                showLoading(false);
+
+            } catch (error) {
+                showError(error.message);
+                showLoading(false);
+            }
+        }
+
+        function applyDateFilter() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            dateFilter.start = startDate;
+            dateFilter.end = endDate;
+
+            // Filter time entries by date range
+            allData.filteredTimeEntries = allData.rawTimeEntries.filter(entry => {
+                return entry.date >= startDate && entry.date <= endDate;
+            });
+
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            const timeEntries = allData.filteredTimeEntries;
+
+            // Calculate member stats
+            const memberStats = {};
+            timeEntries.forEach(entry => {
+                if (!memberStats[entry.username]) {
+                    memberStats[entry.username] = {
+                        name: entry.author,
+                        username: entry.username,
+                        hours: 0,
+                        pbiCount: new Set()
+                    };
+                }
+                memberStats[entry.username].hours += entry.hours;
+                memberStats[entry.username].pbiCount.add(entry.issueId);
+            });
+
+            Object.values(memberStats).forEach(member => {
+                member.pbiCount = member.pbiCount.size;
+            });
+
+            const memberArray = Object.values(memberStats);
+            const maxMemberHours = Math.max(...memberArray.map(m => m.hours), 0);
+            const totalHours = memberArray.reduce((sum, m) => sum + m.hours, 0);
+
+            // Count unique PBIs in filtered data
+            const uniquePbis = new Set(timeEntries.map(e => e.issueId));
+
+            // Update stats
+            document.getElementById('totalHours').textContent = totalHours.toFixed(1) + 'h';
+            document.getElementById('totalPbis').textContent = uniquePbis.size;
+            document.getElementById('totalMembers').textContent = memberArray.length;
+            document.getElementById('avgHours').textContent = 
+                memberArray.length > 0 ? (totalHours / memberArray.length).toFixed(1) + 'h' : '0h';
+
+            // Render cumulative chart
+            renderCumulativeChart(timeEntries, memberStats);
+
+            // Render PBI table (filtered)
+            renderPbiTable(timeEntries);
+
+            // Render member table
+            renderMemberTable(memberArray, maxMemberHours);
+
+            document.getElementById('dashboard').style.display = 'block';
+        }
+
+        function renderCumulativeChart(timeEntries, memberStats) {
+            // Sort entries by date
+            const sortedEntries = [...timeEntries].sort((a, b) => a.date.localeCompare(b.date));
+
+            if (sortedEntries.length === 0) {
+                return;
+            }
+
+            // Get all unique dates in range
+            const allDates = [...new Set(sortedEntries.map(e => e.date))].sort();
+
+            // Get all members
+            const members = Object.keys(memberStats).sort();
+
+            // Generate color palette
+            const colors = [
+                '#667eea', '#764ba2', '#f093fb', '#4facfe',
+                '#43e97b', '#fa709a', '#fee140', '#30cfd0',
+                '#a8edea', '#fed6e3', '#c471ed', '#f64f59'
+            ];
+
+            // Build cumulative data for each member
+            const datasets = members.map((username, index) => {
+                const memberData = {};
+                let cumulative = 0;
+
+                allDates.forEach(date => {
+                    const dayEntries = sortedEntries.filter(
+                        e => e.username === username && e.date === date
+                    );
+                    const dayHours = dayEntries.reduce((sum, e) => sum + e.hours, 0);
+                    cumulative += dayHours;
+                    memberData[date] = cumulative;
+                });
+
+                return {
+                    label: memberStats[username].name,
+                    data: allDates.map(date => memberData[date] || 0),
+                    borderColor: colors[index % colors.length],
+                    backgroundColor: colors[index % colors.length] + '20',
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    pointBackgroundColor: colors[index % colors.length],
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 6
+                };
+            });
+
+            // Destroy existing chart
+            if (allData.cumulativeChart) {
+                allData.cumulativeChart.destroy();
+            }
+
+            // Create new chart
+            const ctx = document.getElementById('cumulativeChart').getContext('2d');
+            allData.cumulativeChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: allDates,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + 'h';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + 'h';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Cumulative Hours'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderPbiTable(timeEntries) {
+            // Group by PBI
+            const pbiData = {};
+            timeEntries.forEach(entry => {
+                if (!pbiData[entry.issueId]) {
+                    pbiData[entry.issueId] = {
+                        id: entry.issueId,
+                        title: entry.issueTitle,
+                        hours: 0,
+                        contributors: new Set()
+                    };
+                }
+                pbiData[entry.issueId].hours += entry.hours;
+                pbiData[entry.issueId].contributors.add(entry.author);
+            });
+
+            const pbiArray = Object.values(pbiData);
+            const maxHours = Math.max(...pbiArray.map(p => p.hours), 0);
+
+            const pbiTableBody = document.getElementById('pbiTableBody');
+
+            if (pbiArray.length === 0) {
+                pbiTableBody.innerHTML = '';
+                document.getElementById('noPbiData').style.display = 'block';
+            } else {
+                document.getElementById('noPbiData').style.display = 'none';
+                pbiTableBody.innerHTML = pbiArray
+                    .sort((a, b) => b.hours - a.hours)
+                    .map(pbi => {
+                        const contributors = Array.from(pbi.contributors).join(', ');
+                        const percentage = maxHours > 0 ? (pbi.hours / maxHours * 100) : 0;
+                        
+                        return `
+                            <tr>
+                                <td>#${pbi.id}</td>
+                                <td>${pbi.title}</td>
+                                <td>${contributors}</td>
+                                <td class="hours">${pbi.hours.toFixed(1)}h</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: ${percentage}%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    })
+                    .join('');
+            }
+        }
+
+        function renderMemberTable(memberArray, maxMemberHours) {
+            const memberTableBody = document.getElementById('memberTableBody');
+
+            if (memberArray.length === 0) {
+                memberTableBody.innerHTML = '';
+                document.getElementById('noMemberData').style.display = 'block';
+            } else {
+                document.getElementById('noMemberData').style.display = 'none';
+                memberTableBody.innerHTML = memberArray
+                    .sort((a, b) => b.hours - a.hours)
+                    .map(member => {
+                        const percentage = maxMemberHours > 0 ? (member.hours / maxMemberHours * 100) : 0;
+                        
+                        return `
+                            <tr class="member-row" onclick="showMemberDetails('${member.username}')">
+                                <td>${member.name}</td>
+                                <td>${member.pbiCount}</td>
+                                <td class="hours">${member.hours.toFixed(1)}h</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: ${percentage}%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    })
+                    .join('');
+            }
+        }
+
+        function showMemberDetails(username) {
+            // Get filtered entries for this member
+            const memberEntries = allData.filteredTimeEntries.filter(
+                e => e.username === username
+            ).sort((a, b) => b.date.localeCompare(a.date));
+
+            const member = memberEntries[0];
+            if (!member) return;
+
+            document.getElementById('modalTitle').textContent = `${member.author} - Time Entries`;
+
+            const modalBody = document.getElementById('modalBody');
+
+            if (memberEntries.length === 0) {
+                modalBody.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No time entries found for this date range</p>
+                    </div>
+                `;
+            } else {
+                modalBody.innerHTML = memberEntries.map(entry => {
+                    // Extract comment from body if present
+                    let comment = '';
+                    if (entry.body) {
+                        // Remove the time tracking command parts and extract any remaining comment
+                        let bodyText = entry.body
+                            .replace(/added.*?of time spent/gi, '')
+                            .replace(/subtracted.*?of time spent/gi, '')
+                            .replace(/\/spend\s+\d+[hmd]/gi, '')
+                            .replace(/\/spent\s+\d+[hmd]/gi, '')
+                            .replace(/\d+(?:\.\d+)?\s*(?:h|hour|hours|m|min|minute|minutes|d|day|days)\s*/gi, '')
+                            .trim();
+                        
+                        if (bodyText && bodyText.length > 0) {
+                            comment = `<div class="time-entry-comment">${bodyText}</div>`;
+                        }
+                    }
+                    
+                    return `
+                        <div class="time-entry">
+                            <div class="time-entry-info">
+                                <div class="time-entry-date">${entry.date}</div>
+                                <div class="time-entry-pbi">#${entry.issueId}: ${entry.issueTitle}</div>
+                                ${comment}
+                            </div>
+                            <div class="time-entry-hours">${entry.hours.toFixed(1)}h</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('timeEntriesModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('timeEntriesModal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('timeEntriesModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
