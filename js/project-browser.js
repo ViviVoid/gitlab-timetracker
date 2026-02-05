@@ -49,10 +49,10 @@ class ProjectBrowser {
       if (filterStarred) {
         const starredProjects = await this.fetchAllPages(
           `${gitlabUrl}/api/v4/projects?starred=true&per_page=100`,
-          accessToken
+          accessToken,
         );
         allProjects = allProjects.concat(
-          starredProjects.map((p) => ({ ...p, source: "starred" }))
+          starredProjects.map((p) => ({ ...p, source: "starred" })),
         );
       }
 
@@ -60,10 +60,10 @@ class ProjectBrowser {
       if (filterMember) {
         const memberProjects = await this.fetchAllPages(
           `${gitlabUrl}/api/v4/projects?membership=true&per_page=100&order_by=last_activity_at`,
-          accessToken
+          accessToken,
         );
         allProjects = allProjects.concat(
-          memberProjects.map((p) => ({ ...p, source: "member" }))
+          memberProjects.map((p) => ({ ...p, source: "member" })),
         );
       }
 
@@ -71,10 +71,10 @@ class ProjectBrowser {
       if (filterOwned) {
         const ownedProjects = await this.fetchAllPages(
           `${gitlabUrl}/api/v4/projects?owned=true&per_page=100`,
-          accessToken
+          accessToken,
         );
         allProjects = allProjects.concat(
-          ownedProjects.map((p) => ({ ...p, source: "owned" }))
+          ownedProjects.map((p) => ({ ...p, source: "owned" })),
         );
       }
 
@@ -82,10 +82,10 @@ class ProjectBrowser {
       if (filterInactive) {
         const archivedProjects = await this.fetchAllPages(
           `${gitlabUrl}/api/v4/projects?archived=true&per_page=100`,
-          accessToken
+          accessToken,
         );
         allProjects = allProjects.concat(
-          archivedProjects.map((p) => ({ ...p, source: "archived" }))
+          archivedProjects.map((p) => ({ ...p, source: "archived" })),
         );
       }
 
@@ -105,14 +105,13 @@ class ProjectBrowser {
         filteredProjects = uniqueProjects.filter(
           (project) =>
             project.name.toLowerCase().includes(searchText) ||
-            project.path_with_namespace.toLowerCase().includes(searchText)
+            project.path_with_namespace.toLowerCase().includes(searchText),
         );
       }
 
       // Sort by last activity
       filteredProjects.sort(
-        (a, b) =>
-          new Date(b.last_activity_at) - new Date(a.last_activity_at)
+        (a, b) => new Date(b.last_activity_at) - new Date(a.last_activity_at),
       );
 
       document.getElementById("projectsLoading").style.display = "none";
@@ -152,7 +151,8 @@ class ProjectBrowser {
               project.permissions &&
               project.permissions.project_access
             ) {
-              const accessLevel = project.permissions.project_access.access_level;
+              const accessLevel =
+                project.permissions.project_access.access_level;
               if (accessLevel >= 50)
                 badges += '<span class="badge badge-owned">Owner</span>';
             }

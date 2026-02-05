@@ -13,7 +13,7 @@ class ChartRenderer {
   static renderCumulativeChart(timeEntries, memberStats) {
     // Sort entries by date
     const sortedEntries = [...timeEntries].sort((a, b) =>
-      a.date.localeCompare(b.date)
+      a.date.localeCompare(b.date),
     );
 
     if (sortedEntries.length === 0) {
@@ -49,7 +49,7 @@ class ChartRenderer {
 
       allDates.forEach((date) => {
         const dayEntries = sortedEntries.filter(
-          (e) => e.username === username && e.date === date
+          (e) => e.username === username && e.date === date,
         );
         const dayHours = dayEntries.reduce((sum, e) => sum + e.hours, 0);
         cumulative += dayHours;

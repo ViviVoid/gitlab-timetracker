@@ -103,7 +103,7 @@ class TableRenderer {
             <td>${item.lastEntryDate}</td>
             <td>${item.daysSince}d</td>
           </tr>
-        `
+        `,
       )
       .join("");
   }
@@ -130,7 +130,7 @@ class TableRenderer {
             <td>${item.negativeHours.toFixed(1)}h</td>
             <td>${item.reworkPercent.toFixed(1)}%</td>
           </tr>
-        `
+        `,
       )
       .join("");
   }

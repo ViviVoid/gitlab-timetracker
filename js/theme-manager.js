@@ -8,7 +8,7 @@ class ThemeManager {
   initializeTheme() {
     const savedTheme = localStorage.getItem("dashboard-theme");
     const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
+      "(prefers-color-scheme: dark)",
     ).matches;
 
     const theme = savedTheme || (prefersDark ? "dark" : "light");
@@ -19,8 +19,7 @@ class ThemeManager {
   }
 
   toggleDarkMode() {
-    const currentTheme =
-      document.documentElement.getAttribute("data-theme");
+    const currentTheme = document.documentElement.getAttribute("data-theme");
     const newTheme = currentTheme === "dark" ? "light" : "dark";
 
     document.documentElement.setAttribute("data-theme", newTheme);
@@ -51,10 +50,14 @@ class ThemeManager {
 
       window.allData.cumulativeChart.options.plugins.legend.labels.color =
         chartTextColor;
-      window.allData.cumulativeChart.options.scales.x.ticks.color = chartTextColor;
-      window.allData.cumulativeChart.options.scales.x.grid.color = chartGridColor;
-      window.allData.cumulativeChart.options.scales.y.ticks.color = chartTextColor;
-      window.allData.cumulativeChart.options.scales.y.grid.color = chartGridColor;
+      window.allData.cumulativeChart.options.scales.x.ticks.color =
+        chartTextColor;
+      window.allData.cumulativeChart.options.scales.x.grid.color =
+        chartGridColor;
+      window.allData.cumulativeChart.options.scales.y.ticks.color =
+        chartTextColor;
+      window.allData.cumulativeChart.options.scales.y.grid.color =
+        chartGridColor;
       window.allData.cumulativeChart.update("none");
     }
   }

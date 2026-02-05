@@ -51,7 +51,7 @@ class FilterManager {
           headers: {
             "PRIVATE-TOKEN": accessToken,
           },
-        }
+        },
       );
 
       if (response.ok) {
@@ -94,7 +94,7 @@ class FilterManager {
     window.allData.filteredTimeEntries = window.allData.rawTimeEntries.filter(
       (entry) => {
         return entry.date >= startDate && entry.date <= endDate;
-      }
+      },
     );
 
     window.updateAnalytics();
@@ -109,7 +109,9 @@ class FilterManager {
       return;
     }
 
-    const milestone = window.allData.milestones.find((m) => m.id == milestoneId);
+    const milestone = window.allData.milestones.find(
+      (m) => m.id == milestoneId,
+    );
     if (!milestone) {
       UIManager.showError("Milestone not found");
       return;
@@ -128,7 +130,7 @@ class FilterManager {
             entry.date >= this.dateFilter.start &&
             entry.date <= this.dateFilter.end
           );
-        }
+        },
       );
     } else {
       // If milestone has no dates, show all entries

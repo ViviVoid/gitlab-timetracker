@@ -52,7 +52,7 @@ function saveThresholds() {
   try {
     localStorage.setItem(
       "analytics-thresholds",
-      JSON.stringify(analyticsThresholds)
+      JSON.stringify(analyticsThresholds),
     );
     UIManager.showToast("Thresholds saved successfully", "success");
   } catch (error) {
@@ -144,10 +144,10 @@ async function initializeApp() {
 
   setupEnterKeySupport();
   setupKeyboardShortcuts();
-  
+
   // Initialize theme manager
   themeManager = new ThemeManager();
-  
+
   // Initialize project browser
   projectBrowser = new ProjectBrowser();
 }
@@ -263,14 +263,14 @@ async function fetchData() {
       accessToken,
       (message) => {
         document.getElementById("loadingMessage").textContent = message;
-      }
+      },
     );
 
     allData.issues = data.issues;
     allData.rawTimeEntries = data.rawTimeEntries;
 
     console.log(
-      `Successfully loaded ${allData.rawTimeEntries.length} time entries from ${allData.issues.length} issues`
+      `Successfully loaded ${allData.rawTimeEntries.length} time entries from ${allData.issues.length} issues`,
     );
 
     filterManager.loadMilestones();
@@ -287,7 +287,7 @@ function updateAnalytics() {
   if (typeof AnalyticsCalculator === "undefined") return;
   allData.analytics = AnalyticsCalculator.computeAll(
     allData.issues,
-    allData.filteredTimeEntries
+    allData.filteredTimeEntries,
   );
   console.log("Analytics computed", allData.analytics);
 
@@ -338,7 +338,7 @@ function generateAnalyticsAlerts() {
 
   if (allData.analytics.stalled && allData.analytics.stalled.length > 0) {
     const criticalStalled = allData.analytics.stalled.filter(
-      (s) => s.daysSince > analyticsThresholds.stalled * 2
+      (s) => s.daysSince > analyticsThresholds.stalled * 2,
     );
     if (criticalStalled.length > 0) {
       alerts.push({
@@ -353,7 +353,7 @@ function generateAnalyticsAlerts() {
 
   if (allData.analytics.rework && allData.analytics.rework.length > 0) {
     const highRework = allData.analytics.rework.filter(
-      (r) => r.reworkPct > analyticsThresholds.rework
+      (r) => r.reworkPct > analyticsThresholds.rework,
     );
     if (highRework.length > 0) {
       alerts.push({
@@ -572,7 +572,8 @@ function renderDashboard() {
   const totalHours = memberArray.reduce((sum, m) => sum + m.hours, 0);
   const uniquePbis = new Set(timeEntries.map((e) => e.issueId));
 
-  document.getElementById("totalHours").textContent = totalHours.toFixed(1) + "h";
+  document.getElementById("totalHours").textContent =
+    totalHours.toFixed(1) + "h";
   document.getElementById("totalPbis").textContent = uniquePbis.size;
   document.getElementById("totalMembers").textContent = memberArray.length;
   document.getElementById("avgHours").textContent =
@@ -909,13 +910,17 @@ function showEstimationDetails() {
     '<p style="margin: 4px 0; color: var(--text-secondary);">Under-Estimated: <strong>' +
     summary.under +
     "</strong> (" +
-    (totalIssues > 0 ? ((summary.under / totalIssues) * 100).toFixed(1) : "0.0") +
+    (totalIssues > 0
+      ? ((summary.under / totalIssues) * 100).toFixed(1)
+      : "0.0") +
     "%)</p>";
   content +=
     '<p style="margin: 4px 0; color: var(--text-secondary);">Over-Estimated: <strong>' +
     summary.over +
     "</strong> (" +
-    (totalIssues > 0 ? ((summary.over / totalIssues) * 100).toFixed(1) : "0.0") +
+    (totalIssues > 0
+      ? ((summary.over / totalIssues) * 100).toFixed(1)
+      : "0.0") +
     "%)</p>";
   content += "</div>";
 
