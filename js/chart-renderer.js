@@ -11,59 +11,58 @@ class ChartRenderer {
   }
 
   static renderCumulativeChart(timeEntries, memberStats) {
-    // Sort entries by date
     const sortedEntries = [...timeEntries].sort((a, b) =>
       a.date.localeCompare(b.date),
     );
 
-    if (sortedEntries.length === 0) {
-      return;
+    if (sortedEntries.length === 0) return;
+
+    // ── 1. Build a FULL date range with no gaps ───────────────────────────────
+    const uniqueDates = [...new Set(sortedEntries.map((e) => e.date))].sort();
+    const startDate = new Date(uniqueDates[0]);
+    const endDate   = new Date(uniqueDates[uniqueDates.length - 1]);
+    const allDates  = [];
+    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+      allDates.push(d.toISOString().slice(0, 10));
     }
 
-    // Get all unique dates in range
-    const allDates = [...new Set(sortedEntries.map((e) => e.date))].sort();
+    // ── 2. Pick a clean, regular tick interval based on total day count ───────
+    const totalDays = allDates.length;
+    const tickInterval =
+      totalDays <= 21 ? 1 :
+      totalDays <= 42 ? 3 :
+      totalDays <= 70 ? 5 : 7;
 
     // Get all members
     const members = Object.keys(memberStats).sort();
 
     // Generate color palette
     const colors = [
-      "#667eea",
-      "#764ba2",
-      "#f093fb",
-      "#4facfe",
-      "#43e97b",
-      "#fa709a",
-      "#fee140",
-      "#30cfd0",
-      "#a8edea",
-      "#fed6e3",
-      "#c471ed",
-      "#f64f59",
+      "#667eea", "#764ba2", "#f093fb", "#4facfe", "#43e97b",
+      "#fa709a", "#fee140", "#30cfd0", "#a8edea", "#fed6e3",
+      "#c471ed", "#f64f59",
     ];
 
     // Build cumulative data for each member
+    // (carry the last cumulative value forward into days with no entries)
     const datasets = members.map((username, index) => {
-      const memberData = {};
       let cumulative = 0;
-
-      allDates.forEach((date) => {
-        const dayEntries = sortedEntries.filter(
-          (e) => e.username === username && e.date === date,
-        );
-        const dayHours = dayEntries.reduce((sum, e) => sum + e.hours, 0);
+      const data = allDates.map((date) => {
+        const dayHours = sortedEntries
+          .filter((e) => e.username === username && e.date === date)
+          .reduce((sum, e) => sum + e.hours, 0);
         cumulative += dayHours;
-        memberData[date] = cumulative;
+        return cumulative;
       });
 
       return {
         label: memberStats[username].name,
-        data: allDates.map((date) => memberData[date] || 0),
+        data,
         borderColor: colors[index % colors.length],
         backgroundColor: colors[index % colors.length] + "20",
         borderWidth: 3,
         fill: false,
-        tension: 0.4,
+        tension: 0,
         pointRadius: 3,
         pointBackgroundColor: colors[index % colors.length],
         pointBorderColor: "#fff",
@@ -72,65 +71,46 @@ class ChartRenderer {
       };
     });
 
-    // Destroy existing chart
     if (window.allData.cumulativeChart) {
       window.allData.cumulativeChart.destroy();
     }
 
-    // Create new chart
     const ctx = document.getElementById("cumulativeChart").getContext("2d");
     window.allData.cumulativeChart = new Chart(ctx, {
       type: "line",
-      data: {
-        labels: allDates,
-        datasets: datasets,
-      },
+      data: { labels: allDates, datasets },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        interaction: {
-          mode: "index",
-          intersect: false,
-        },
+        interaction: { mode: "index", intersect: false },
         plugins: {
           legend: {
             display: true,
             position: "top",
-            labels: {
-              usePointStyle: true,
-              padding: 15,
-            },
+            labels: { usePointStyle: true, padding: 15 },
           },
           tooltip: {
             callbacks: {
-              label: function (context) {
-                return (
-                  context.dataset.label +
-                  ": " +
-                  context.parsed.y.toFixed(1) +
-                  "h"
-                );
-              },
+              label: (ctx) =>
+                `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}h`,
             },
           },
         },
         scales: {
           y: {
             beginAtZero: true,
-            ticks: {
-              callback: function (value) {
-                return value + "h";
-              },
-            },
-            title: {
-              display: true,
-              text: "Cumulative Hours",
-            },
+            ticks: { callback: (v) => v + "h" },
+            title: { display: true, text: "Cumulative Hours" },
           },
           x: {
-            title: {
-              display: true,
-              text: "Date",
+            title: { display: true, text: "Date" },
+            ticks: {
+              // ── Only show a label every `tickInterval` days ───────────────
+              callback(val, index) {
+                return index % tickInterval === 0 ? this.getLabelForValue(val) : null;
+              },
+              maxRotation: 45,
+              autoSkip: false,   // we control skipping ourselves
             },
           },
         },
